@@ -32,6 +32,20 @@ ALLOWED_HOSTS = ["127.0.0.1", "adilmohak1.pythonanywhere.com"]
 # change the default user models to our custom model
 AUTH_USER_MODEL = "accounts.User"
 
+
+ALLOWED_HOSTS = ["127.0.0.1", "localhost", "874c-39-49-162-188.ngrok-free.app"]
+
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://874c-39-49-162-188.ngrok-free.app",
+    "https://*.ngrok-free.app",  # This wildcard will match all ngrok domains
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
+]
+
+# If you're using Django 4.0+, you might also need to set:
+CSRF_COOKIE_DOMAIN = None  # or '.ngrok-free.app' for wildcard
+
 # Application definition
 
 DJANGO_APPS = [
@@ -123,20 +137,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
 
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
-    },
-]
+AUTH_PASSWORD_VALIDATORS = []
 
 
 # Internationalization
@@ -204,8 +205,8 @@ EMAIL_USE_SSL = False
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
 
-LOGIN_REDIRECT_URL = "/"
-LOGOUT_REDIRECT_URL = "/"
+LOGIN_REDIRECT_URL = "home"
+LOGOUT_REDIRECT_URL = "landing"
 
 # DRF setup
 REST_FRAMEWORK = {

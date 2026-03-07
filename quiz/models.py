@@ -1,5 +1,6 @@
 import re
 import json
+from modeltranslation.manager import MultilingualManager
 
 from django.db import models
 from django.urls import reverse
@@ -245,7 +246,9 @@ class SittingManager(models.Manager):
 
         if len(question_set) == 0:
             raise ImproperlyConfigured(
-                _("Question set of the quiz is empty. Please configure questions properly")
+                _(
+                    "Question set of the quiz is empty. Please configure questions properly"
+                )
             )
 
         # if quiz.max_questions and quiz.max_questions < len(question_set):
@@ -461,7 +464,8 @@ class Question(models.Model):
         verbose_name=_("Explanation"),
     )
 
-    objects = InheritanceManager()
+    # objects = InheritanceManager()
+    objects = MultilingualManager()
 
     class Meta:
         verbose_name = _("Question")

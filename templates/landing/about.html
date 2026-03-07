@@ -1,0 +1,140 @@
+{% extends 'base_landing.html' %}
+{% load static %}
+
+{% block extra_css %}
+<style>
+    .page-header {
+        background: var(--gradient-bg);
+        color: white;
+        padding: 6rem 0 4rem;
+        position: relative;
+        overflow: hidden;
+    }
+    .page-title {
+        font-weight: 800;
+        font-size: 3rem;
+    }
+    .about-section {
+        padding: 5rem 0;
+        background-color: white;
+    }
+    .about-image {
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        width: 100%;
+        height: 400px;
+        background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .about-image i {
+        font-size: 6rem;
+        color: #adb5bd;
+    }
+    .stats-card {
+        background: #f8f9fa;
+        border-radius: 15px;
+        padding: 2rem;
+        text-align: center;
+        transition: transform 0.3s ease;
+    }
+    .stats-card:hover {
+        transform: translateY(-5px);
+        background: white;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    }
+    .stat-number {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: var(--primary-purple);
+        margin-bottom: 0.5rem;
+    }
+    .mission-vision {
+        background: #f8f9fa;
+        padding: 4rem 0;
+    }
+    .mv-card {
+        background: white;
+        padding: 2.5rem;
+        border-radius: 20px;
+        height: 100%;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.03);
+        border: 1px solid rgba(0,0,0,0.05);
+    }
+    .mv-icon {
+        font-size: 2.5rem;
+        margin-bottom: 1.5rem;
+        background: var(--gradient-bg);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<header class="page-header text-center">
+    <div class="container animate__animated animate__fadeInUp">
+        <h1 class="page-title">About SBI</h1>
+        <p class="lead text-white-50 mt-3">Shaping the future of digital education and IT services.</p>
+    </div>
+</header>
+
+<section class="about-section">
+    <div class="container">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6">
+                <div class="about-image">
+                    <i class="fas fa-building"></i>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <h6 class="text-primary fw-bold text-uppercase mb-2">Our Story</h6>
+                <h2 class="fw-bold mb-4">Driving Innovation Through Education & Technology</h2>
+                <p class="text-muted mb-4">
+                    The School of Business Intelligence (SBI) was founded with a singular vision: to bridge the gap between theoretical knowledge and practical industry demands. We specialize in providing top-tier IT services to businesses while simultaneously offering comprehensive, highly actionable training programs.
+                </p>
+                <p class="text-muted mb-4">
+                    Whether you are an enterprise looking for a robust web presence, or a student aiming to accelerate your career in tech, our expert team is dedicated to guiding you toward long-term success.
+                </p>
+                
+                <div class="row g-3 mt-4">
+                    <div class="col-sm-6">
+                        <div class="stats-card">
+                            <div class="stat-number">5K+</div>
+                            <div class="text-muted fw-bold">Students Trained</div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="stats-card">
+                            <div class="stat-number">300+</div>
+                            <div class="text-muted fw-bold">Projects Delivered</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="mission-vision">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="mv-card text-center">
+                    <i class="fas fa-bullseye mv-icon"></i>
+                    <h3 class="fw-bold mb-3">Our Mission</h3>
+                    <p class="text-muted mb-0">To empower individuals and organizations with state-of-the-art technological skills and solutions, fostering a culture of continuous learning and digital transformation.</p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mv-card text-center">
+                    <i class="fas fa-eye mv-icon"></i>
+                    <h3 class="fw-bold mb-3">Our Vision</h3>
+                    <p class="text-muted mb-0">To be the global leader in professional technical education and a trusted partner for enterprise-grade IT services, setting the standard for excellence worldwide.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock content %}

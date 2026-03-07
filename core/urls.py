@@ -1,6 +1,11 @@
 from django.urls import path
 
 from .views import (
+    landing_page_view,
+    about_view,
+    contact_view,
+    services_view,
+    courses_view,
     home_view,
     post_add,
     edit_post,
@@ -19,7 +24,12 @@ from .views import (
 
 urlpatterns = [
     # Accounts url
-    path("", home_view, name="home"),
+    path("", landing_page_view, name="landing"),
+    path("about/", about_view, name="about"),
+    path("contact/", contact_view, name="contact"),
+    path("services/", services_view, name="services"),
+    path("courses/", courses_view, name="courses"),
+    path("home/", home_view, name="home"),
     path("add_item/", post_add, name="add_item"),
     path("item/<int:pk>/edit/", edit_post, name="edit_post"),
     path("item/<int:pk>/delete/", delete_post, name="delete_post"),

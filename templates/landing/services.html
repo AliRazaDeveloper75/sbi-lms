@@ -1,0 +1,220 @@
+{% extends 'base_landing.html' %}
+{% load static %}
+
+{% block extra_css %}
+<style>
+    .page-header {
+        background: var(--gradient-bg);
+        color: white;
+        padding: 6rem 0 4rem;
+        position: relative;
+    }
+    .page-title {
+        font-weight: 800;
+        font-size: 3rem;
+    }
+    .services-grid {
+        padding: 5rem 0;
+        background-color: #f8f9fa;
+        margin-top: -3rem;
+    }
+    .service-card {
+        background: white;
+        border-radius: 20px;
+        border: 1px solid rgba(0,0,0,0.05);
+        padding: 2.5rem 1.5rem;
+        height: 100%;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.02);
+    }
+    .service-card:hover {
+        transform: translateY(-15px);
+        box-shadow: 0 20px 40px rgba(111, 66, 193, 0.1);
+        border-color: rgba(111, 66, 193, 0.2);
+    }
+    .service-icon-wrap {
+        width: 80px;
+        height: 80px;
+        margin: 0 auto 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: #f8f9fa;
+        transition: all 0.3s ease;
+    }
+    .service-card:hover .service-icon-wrap {
+        background: var(--gradient-bg);
+    }
+    .service-card:hover .service-icon {
+        background: none;
+        -webkit-text-fill-color: white;
+        color: white;
+    }
+    .service-icon {
+        font-size: 2.2rem;
+        background: var(--gradient-bg);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        transition: all 0.3s ease;
+    }
+    .features-list {
+        list-style: none;
+        padding-left: 0;
+        margin-top: 1.5rem;
+        text-align: left;
+    }
+    .features-list li {
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+        color: #6c757d;
+        display: flex;
+        align-items: center;
+    }
+    .features-list li i {
+        color: var(--primary-blue);
+        margin-right: 0.5rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<header class="page-header text-center">
+    <div class="container animate__animated animate__fadeInUp pb-5">
+        <h1 class="page-title">Premium IT Services</h1>
+        <p class="lead text-white-50 mt-3">Comprehensive tech solutions designed to scale your business.</p>
+    </div>
+</header>
+
+<section class="services-grid">
+    <div class="container">
+        <div class="row g-4">
+            <!-- Service 1 -->
+            <div class="col-md-6 col-lg-4">
+                <div class="service-card text-center">
+                    <div class="service-icon-wrap">
+                        <i class="fas fa-code service-icon"></i>
+                    </div>
+                    <h4 class="fw-bold mb-3">Website Development</h4>
+                    <p class="text-muted small mb-0">Custom HTML, CSS, JavaScript, and React solutions tailored to your brand.</p>
+                    <ul class="features-list">
+                        <li><i class="fas fa-check-circle"></i> Custom UI/UX Design</li>
+                        <li><i class="fas fa-check-circle"></i> Responsive Frameworks</li>
+                        <li><i class="fas fa-check-circle"></i> API Integrations</li>
+                    </ul>
+                </div>
+            </div>
+            <!-- Service 2 -->
+            <div class="col-md-6 col-lg-4">
+                <div class="service-card text-center">
+                    <div class="service-icon-wrap">
+                        <i class="fab fa-wordpress service-icon"></i>
+                    </div>
+                    <h4 class="fw-bold mb-3">WordPress Design</h4>
+                    <p class="text-muted small mb-0">Responsive, fast, and easy-to-manage professional WP websites.</p>
+                    <ul class="features-list">
+                        <li><i class="fas fa-check-circle"></i> Premium Themes</li>
+                        <li><i class="fas fa-check-circle"></i> Plugin Configuration</li>
+                        <li><i class="fas fa-check-circle"></i> Speed Optimization</li>
+                    </ul>
+                </div>
+            </div>
+            <!-- Service 3 -->
+            <div class="col-md-6 col-lg-4">
+                <div class="service-card text-center">
+                    <div class="service-icon-wrap">
+                        <i class="fab fa-shopify service-icon"></i>
+                    </div>
+                    <h4 class="fw-bold mb-3">Shopify Stores</h4>
+                    <p class="text-muted small mb-0">High-converting eCommerce store setup, designed to sell.</p>
+                    <ul class="features-list">
+                        <li><i class="fas fa-check-circle"></i> Store Setup & Design</li>
+                        <li><i class="fas fa-check-circle"></i> Payment Gateways</li>
+                        <li><i class="fas fa-check-circle"></i> App Configurations</li>
+                    </ul>
+                </div>
+            </div>
+            <!-- Service 4 -->
+            <div class="col-md-6 col-lg-4">
+                <div class="service-card text-center">
+                    <div class="service-icon-wrap">
+                        <i class="fas fa-shopping-cart service-icon"></i>
+                    </div>
+                    <h4 class="fw-bold mb-3">E-commerce Solutions</h4>
+                    <p class="text-muted small mb-0">Comprehensive online retail platforms and secure integrations.</p>
+                    <ul class="features-list">
+                        <li><i class="fas fa-check-circle"></i> Multi-vendor Platforms</li>
+                        <li><i class="fas fa-check-circle"></i> Inventory Management</li>
+                        <li><i class="fas fa-check-circle"></i> Secure Checkout</li>
+                    </ul>
+                </div>
+            </div>
+            <!-- Service 5 -->
+            <div class="col-md-6 col-lg-4">
+                <div class="service-card text-center">
+                    <div class="service-icon-wrap">
+                        <i class="fas fa-chart-line service-icon"></i>
+                    </div>
+                    <h4 class="fw-bold mb-3">SEO & Digital Marketing</h4>
+                    <p class="text-muted small mb-0">Rank higher to drive organic traffic, leads, and continuous growth.</p>
+                    <ul class="features-list">
+                        <li><i class="fas fa-check-circle"></i> On-page & Off-page SEO</li>
+                        <li><i class="fas fa-check-circle"></i> Keyword Strategy</li>
+                        <li><i class="fas fa-check-circle"></i> Analytics Dashboard</li>
+                    </ul>
+                </div>
+            </div>
+            <!-- Service 6 -->
+            <div class="col-md-6 col-lg-4">
+                <div class="service-card text-center">
+                    <div class="service-icon-wrap">
+                        <i class="fas fa-bullhorn service-icon"></i>
+                    </div>
+                    <h4 class="fw-bold mb-3">Social Media Marketing</h4>
+                    <p class="text-muted small mb-0">Build an engaged audience and create viral brand moments.</p>
+                    <ul class="features-list">
+                        <li><i class="fas fa-check-circle"></i> Content Calendars</li>
+                        <li><i class="fas fa-check-circle"></i> Meta & TikTok Ads</li>
+                        <li><i class="fas fa-check-circle"></i> Community Management</li>
+                    </ul>
+                </div>
+            </div>
+            <!-- Service 7 -->
+            <div class="col-md-6 col-lg-4">
+                <div class="service-card text-center">
+                    <div class="service-icon-wrap">
+                        <i class="fas fa-paint-brush service-icon"></i>
+                    </div>
+                    <h4 class="fw-bold mb-3">Branding & Graphic Design</h4>
+                    <p class="text-muted small mb-0">Eye-catching visuals to forge a strong, memorable company identity.</p>
+                    <ul class="features-list">
+                        <li><i class="fas fa-check-circle"></i> Logo & Identity Design</li>
+                        <li><i class="fas fa-check-circle"></i> Marketing Material</li>
+                        <li><i class="fas fa-check-circle"></i> UI/UX Prototyping</li>
+                    </ul>
+                </div>
+            </div>
+            <!-- Service 8 -->
+            <div class="col-md-6 col-lg-4">
+                <div class="service-card text-center">
+                    <div class="service-icon-wrap">
+                        <i class="fas fa-tools service-icon"></i>
+                    </div>
+                    <h4 class="fw-bold mb-3">Maintenance & Support</h4>
+                    <p class="text-muted small mb-0">Reliable monthly technical support, backups, and critical updates.</p>
+                    <ul class="features-list">
+                        <li><i class="fas fa-check-circle"></i> Daily Backups</li>
+                        <li><i class="fas fa-check-circle"></i> Security Audits</li>
+                        <li><i class="fas fa-check-circle"></i> 24/7 Monitoring</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="text-center mt-5">
+            <h3 class="fw-bold mb-3">Ready to transform your business?</h3>
+            <a href="{% url 'contact' %}" class="btn btn-gradient btn-lg rounded-pill px-5 fw-bold mt-2">Get a Free Consultation</a>
+        </div>
+    </div>
+</section>
+{% endblock content %}

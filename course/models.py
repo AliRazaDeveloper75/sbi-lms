@@ -23,11 +23,15 @@ YEARS = (
 # LEVEL_COURSE = "Level course"
 BACHELOR_DEGREE = _("Bachelor")
 MASTER_DEGREE = _("Master")
+MATRIC = _("Matric")
+INTERMEDIATE = _("Intermediate")
 
 LEVEL = (
     # (LEVEL_COURSE, "Level course"),
     (BACHELOR_DEGREE, _("Bachelor Degree")),
     (MASTER_DEGREE, _("Master Degree")),
+    (MATRIC, _("Matric")),
+    (INTERMEDIATE, _("Intermediate")),
 )
 
 FIRST = _("First")

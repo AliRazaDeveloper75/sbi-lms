@@ -13,11 +13,15 @@ from .validators import ASCIIUsernameValidator
 # LEVEL_COURSE = "Level course"
 BACHELOR_DEGREE = _("Bachelor")
 MASTER_DEGREE = _("Master")
+MATRIC = _("Matric")
+INTERMEDIATE = _("Intermediate")
 
 LEVEL = (
     # (LEVEL_COURSE, "Level course"),
     (BACHELOR_DEGREE, _("Bachelor Degree")),
     (MASTER_DEGREE, _("Master Degree")),
+    (MATRIC, _("Matric")),
+    (INTERMEDIATE, _("Intermediate")),
 )
 
 FATHER = _("Father")
@@ -100,14 +104,15 @@ class User(AbstractUser):
     @property
     def get_user_role(self):
         if self.is_superuser:
-            role = _("Admin")
+            role = _("Superuser")
         elif self.is_student:
             role = _("Student")
         elif self.is_lecturer:
-            role = _("Lecturer")
+            role = _("Teacher Instructor")
         elif self.is_parent:
             role = _("Parent")
-
+        else:
+            role = _("None")
         return role
 
     def get_picture(self):

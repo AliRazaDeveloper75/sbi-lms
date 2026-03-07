@@ -9,6 +9,25 @@ from .models import NewsAndEvents, ActivityLog, Session, Semester
 
 
 # ########################################################
+# Landing Page
+# ########################################################
+def landing_page_view(request):
+    return render(request, "landing/index.html", {"title": "Welcome"})
+
+def about_view(request):
+    return render(request, "landing/about.html", {"title": "About SBI"})
+
+def contact_view(request):
+    return render(request, "landing/contact.html", {"title": "Contact Us"})
+
+def services_view(request):
+    return render(request, "landing/services.html", {"title": "IT Services"})
+
+def courses_view(request):
+    return render(request, "landing/courses.html", {"title": "Our Courses"})
+
+
+# ########################################################
 # News & Events
 # ########################################################
 @login_required

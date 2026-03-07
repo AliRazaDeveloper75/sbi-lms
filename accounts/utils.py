@@ -3,17 +3,37 @@ from django.contrib.auth import get_user_model
 from django.conf import settings
 import threading
 from core.utils import send_html_email
+from django.utils.crypto import get_random_string
 
 
-def generate_password():
-    return get_user_model().objects.make_random_password()
+def generate_password(length=8):
+    """
+    Generate a simple random password.
+    """
+    import random
+    import string
+    return "".join(random.choice(string.ascii_lowercase) for _ in range(length))
 
 
 def generate_student_id():
-    # Generate a username based on first and last name and registration date
-    registered_year = datetime.now().strftime("%Y")
-    students_count = get_user_model().objects.filter(is_student=True).count()
-    return f"{settings.STUDENT_ID_PREFIX}-{registered_year}-{students_count}"
+    """
+    Generate a unique student ID using timestamp.
+    """
+    from datetime import datetime
+
+    User = get_user_model()
+    # Use timestamp to ensure uniqueness
+    timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+    random_suffix = get_random_string(length=4, allowed_chars="0123456789")
+
+    username = f"{settings.STUDENT_ID_PREFIX}-{timestamp}-{random_suffix}"
+
+    # Double-check uniqueness (though timestamp makes it extremely unlikely)
+    while User.objects.filter(username=username).exists():
+        random_suffix = get_random_string(length=4, allowed_chars="0123456789")
+        username = f"{settings.STUDENT_ID_PREFIX}-{timestamp}-{random_suffix}"
+
+    return username
 
 
 def generate_lecturer_id():
@@ -54,7 +74,7 @@ def send_new_account_email(user, password):
     else:
         template_name = "accounts/email/new_lecturer_account_confirmation.html"
     email = {
-        "subject": "Your Dj LMS account confirmation and credentials",
+        "subject": "Your SBI LMS account confirmation and credentials",
         "recipient_list": [user.email],
         "template_name": template_name,
         "context": {"user": user, "password": password},

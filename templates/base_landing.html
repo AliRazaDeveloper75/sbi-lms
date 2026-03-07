@@ -1,0 +1,240 @@
+{% load static %}
+{% load i18n %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{% block title %}SBI (School of Business Intelligence){% endblock title %}</title>
+
+    <link rel="shortcut icon" href="{% static 'img/favicon.png' %}" type="image/x-icon">
+
+    <!-- Fontawesome icons -->
+    <link rel="stylesheet" type="text/css" href="{% static 'vendor/fontawesome-6.5.1/css/all.min.css' %}">
+
+    <!-- Bootstrap5 -->
+    <link rel="stylesheet" type="text/css" href="{% static 'vendor/bootstrap-5.3.2/css/bootstrap.min.css' %}">
+    
+    <!-- Animate.css for subtle entrance animations -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+
+    <style>
+        :root {
+            --primary-blue: #0d6efd;
+            --primary-purple: #6f42c1;
+            --gradient-bg: linear-gradient(135deg, var(--primary-blue), var(--primary-purple));
+        }
+        body {
+            font-family: 'Inter', 'Segoe UI', Roboto, sans-serif;
+            background-color: #f8f9fa;
+        }
+        .navbar {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .navbar-brand {
+            font-weight: 800;
+            background: var(--gradient-bg);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 1.5rem;
+        }
+        .btn-gradient {
+            background: var(--gradient-bg);
+            color: white;
+            border: none;
+            transition: all 0.3s ease;
+        }
+        .btn-gradient:hover {
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(111, 66, 193, 0.4);
+        }
+        .nav-link {
+            font-weight: 500;
+            color: #495057;
+            transition: color 0.3s ease;
+        }
+        .nav-link:hover {
+            color: var(--primary-purple);
+        }
+        .footer {
+            background-color: #212529;
+            color: white;
+            padding: 4rem 0 2rem;
+        }
+        .footer a {
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .footer a:hover {
+            color: white;
+        }
+
+        /* Floating Contact Buttons */
+        .floating-btn {
+            position: fixed;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            color: white;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        .floating-btn:hover {
+            transform: scale(1.1);
+            color: white;
+        }
+        .floating-btn i {
+            font-size: 1.8rem;
+        }
+        .floating-btn-text {
+            position: absolute;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: 500;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            white-space: nowrap;
+        }
+        .floating-btn.whatsapp {
+            bottom: 30px;
+            right: 30px;
+            background-color: #25d366; /* WhatsApp Green */
+        }
+        .floating-btn.whatsapp:hover {
+            box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4);
+        }
+        .floating-btn.whatsapp .floating-btn-text {
+            right: 75px;
+        }
+        .floating-btn.call {
+            bottom: 30px;
+            left: 30px;
+            background-color: var(--primary-blue);
+        }
+        .floating-btn.call:hover {
+            box-shadow: 0 6px 20px rgba(13, 110, 253, 0.4);
+        }
+        .floating-btn.call .floating-btn-text {
+            left: 75px;
+        }
+        .floating-btn:hover .floating-btn-text {
+            opacity: 1;
+        }
+    </style>
+    {% block extra_css %}{% endblock extra_css %}
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top py-3">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'landing' %}">
+                <i class="fas fa-graduation-cap me-2 text-primary" style="background: none; -webkit-text-fill-color: initial;"></i>
+                SBI
+            </a>
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center gap-3">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'landing' %}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'about' %}">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'contact' %}">Contact</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'services' %}">IT Services</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'courses' %}">Courses</a>
+                    </li>
+                    <li class="nav-item ms-lg-2">
+                        <a class="btn btn-gradient px-4 rounded-pill fw-bold" href="{% url 'login' %}">
+                            <i class="fas fa-user-circle me-1"></i> Login / Access LMS
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        {% block content %}{% endblock content %}
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="row g-4 mb-4">
+                <div class="col-lg-4">
+                    <h5 class="text-white fw-bold mb-3">SBI</h5>
+                    <p class="text-white-50 small pe-lg-4">
+                        Empowering futures through premium IT Services and industry-leading Digital Skills Training. Build your career with top-tier education.
+                    </p>
+                </div>
+                <div class="col-lg-2 offset-lg-2 col-md-4">
+                    <h6 class="text-white fw-bold mb-3">Quick Links</h6>
+                    <ul class="list-unstyled small d-flex flex-column gap-2">
+                        <li><a href="{% url 'services' %}">IT Services</a></li>
+                        <li><a href="{% url 'courses' %}">Our Courses</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-2 col-md-4">
+                    <h6 class="text-white fw-bold mb-3">Community</h6>
+                    <ul class="list-unstyled small d-flex flex-column gap-2">
+                        <li><a href="{% url 'register' %}">Student Registration</a></li>
+                        <li><a href="{% url 'login' %}">LMS Portal Login</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-2 col-md-4">
+                    <h6 class="text-white fw-bold mb-3">Connect</h6>
+                    <div class="d-flex gap-3">
+                        <a href="#"><i class="fab fa-facebook fa-lg"></i></a>
+                        <a href="#"><i class="fab fa-twitter fa-lg"></i></a>
+                        <a href="#"><i class="fab fa-linkedin fa-lg"></i></a>
+                        <a href="#"><i class="fab fa-instagram fa-lg"></i></a>
+                    </div>
+                </div>
+            </div>
+            
+            <hr class="border-secondary mb-4">
+            
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-center text-white-50 small">
+                <p class="mb-2 mb-md-0">&copy; {% now "Y" %} SBI. All rights reserved.</p>
+                <div class="d-flex gap-3">
+                    <span>Designed for modern education</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Floating Contact Buttons -->
+    <a href="tel:+923043309005" class="floating-btn call">
+        <i class="fas fa-phone-alt"></i>
+        <span class="floating-btn-text">Call Now</span>
+    </a>
+
+    <a href="https://wa.me/923043309005" target="_blank" class="floating-btn whatsapp">
+        <i class="fab fa-whatsapp"></i>
+        <span class="floating-btn-text">WhatsApp Us</span>
+    </a>
+
+    <script type="text/javascript" src="{% static 'vendor/jquery-3.7.1/jquery-3.7.1.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'vendor/bootstrap-5.3.2/js/bootstrap.bundle.min.js' %}"></script>
+    {% block extra_js %}{% endblock extra_js %}
+</body>
+</html>
