@@ -59,7 +59,7 @@ Maintaining consistent coding style is important for the project's readability. 
 
 ## License
 
-By contributing to SBI LMS, you agree that your contributions will be licensed under the [SBI LMS's license](https://github.com/adilmohak/SBI LMS/blob/main/LICENSE).
+By contributing to SBI LMS, you agree that your contributions will be licensed under the [SBI LMS's license](https://github.com/AliRazaDeveloper75/SBI LMS/blob/main/LICENSE).
 
 ---
 

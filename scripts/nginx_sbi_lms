@@ -1,0 +1,19 @@
+server {
+    listen 80;
+    server_name 13.60.209.165;
+
+    location = /favicon.ico { access_log off; log_not_found off; }
+    
+    location /static/ {
+        root /home/ubuntu/sbi-lms;
+    }
+
+    location /media/ { 
+        root /home/ubuntu/sbi-lms;
+    }
+
+    location / {
+        include proxy_params;
+        proxy_pass http://unix:/run/gunicorn.socket;
+    }
+}

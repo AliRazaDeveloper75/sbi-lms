@@ -27,13 +27,12 @@ SECRET_KEY = config(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DEBUG", default=True, cast=bool)
 
-ALLOWED_HOSTS = ["127.0.0.1", "adilmohak1.pythonanywhere.com"]
-
-# change the default user models to our custom model
-AUTH_USER_MODEL = "accounts.User"
-
-
-ALLOWED_HOSTS = ["127.0.0.1", "localhost", "874c-39-49-162-188.ngrok-free.app"]
+ALLOWED_HOSTS = [
+    "127.0.0.1",
+    "localhost",
+    "874c-39-49-162-188.ngrok-free.app",
+    "13.60.209.165",
+]
 
 
 CSRF_TRUSTED_ORIGINS = [

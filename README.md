@@ -1,17 +1,52 @@
-# Taking the project to the next level on **https://github.com/SkyCascade/SkyLearn** 🚀
+# SBI LMS (Learning Management System)
 
-# Repository Moved to [SkyCascade/SkyLearn](https://github.com/SkyCascade/SkyLearn) and no longer maintained here
+Welcome to **SBI LMS**, a feature-rich, modern Learning Management System designed for educational organizations and individual learners.
 
-### Please update your bookmarks and direct all issues and pull requests to the new repository.
+![SBI LMS Logo](https://github.com/AliRazaDeveloper75/sbi-lms/blob/main/static/img/dj-lms.png?raw=true)
+
+## Key Features
+- **Simplified Password Policy**: Easy account management for students and staff.
+- **Course Management**: Effortlessly handle courses, programs, and student enrollments.
+- **Role-Based Access**: Specialized dashboards for Students, Teacher Instructors, and Administrators.
+- **Reporting & Assessment**: Integrated quiz system and result tracking.
+- **Responsive Design**: Fully optimized for mobile and desktop views.
+
+## Quick Start (Local Development)
+
+### 1. Clone the repository
+```bash
+git clone https://github.com/AliRazaDeveloper75/sbi-lms.git
+cd sbi-lms
+```
+
+### 2. Set up virtual environment
+```bash
+python -m venv venv
+# Windows
+.\venv\Scripts\activate
+# Linux/macOS
+source venv/bin/activate
+```
+
+### 3. Install dependencies
+```bash
+pip install -r requirements.txt
+```
+
+### 4. Run migrations and start server
+```bash
+python manage.py migrate
+python manage.py runserver
+```
+
+Navigate to `http://127.0.0.1:8000/` to see the app in action!
+
+## Deployment
+For instructions on how to deploy this project to **AWS EC2**, please refer to the detailed **[Deployment Guide](https://github.com/AliRazaDeveloper75/sbi-lms/blob/main/.gemini/antigravity/brain/cfba0d77-dcb7-407c-a285-1822fabed436/deployment_guide.md)**.
+
+## License
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
-
-*Note: This repository is archived and read-only.*
-
----
-
-### Learning management system using django web framework
-
-Feature-rich learning management system. You may want to build a learning management system(AKA school management system) for a school organization or just for the sake of learning the tech stack and building your portfolio, either way, this project would be a good kickstart for you.
-
-![Screenshot from 2023-12-31 17-36-31](https://github.com/adilmohak/SBI LMS/assets/60693922/e7fb628a-6275-4160-ae0f-ab27099ab3ca)
+Developed by **Ali Raza** & Team.
+```
