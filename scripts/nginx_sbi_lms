@@ -1,15 +1,15 @@
 server {
     listen 80;
-    server_name 13.60.209.165;
+    server_name genext.online www.genext.online 13.60.209.165;
 
     location = /favicon.ico { access_log off; log_not_found off; }
     
     location /static/ {
-        root /home/ubuntu/sbi-lms;
+        alias /home/ubuntu/sbi-lms/staticfiles/;
     }
 
-    location /media/ { 
-        root /home/ubuntu/sbi-lms;
+    location /media/ {
+        alias /home/ubuntu/sbi-lms/media/;
     }
 
     location / {

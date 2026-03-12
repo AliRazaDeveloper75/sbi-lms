@@ -11,9 +11,9 @@ set -e
 echo "Starting Deployment process..."
 
 # Define your project root here (where you cloned your repo on EC2)
-# Often this is /home/ubuntu/SBI LMS
-PROJECT_DIR="/home/ubuntu/SBI LMS"
-VIRTUAL_ENV_DIR="/home/ubuntu/SBI LMS/venv"
+# Often this is /home/ubuntu/sbi-lms
+PROJECT_DIR="/home/ubuntu/sbi-lms"
+VIRTUAL_ENV_DIR="/home/ubuntu/sbi-lms/venv"
 
 echo "Navigating to project directory: $PROJECT_DIR"
 cd $PROJECT_DIR
