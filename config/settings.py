@@ -17,6 +17,8 @@ ALLOWED_HOSTS = [
     "localhost",
     "874c-39-49-162-188.ngrok-free.app",
     "13.60.209.165",
+    "13.63.165.173",           # Your server IP
+    "13.63.165.173:8000",      # Your server IP with port
     "genext.online",
     "www.genext.online",
 ]
