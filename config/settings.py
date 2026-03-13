@@ -3,8 +3,22 @@ from decouple import config
 from django.utils import translation
 
 # Fix for django-jet compatibility with Django 4.0+
-if not hasattr(translation, 'ugettext_lazy'):
-    translation.ugettext_lazy = translation.gettext_lazy
+try:
+    from django.utils import translation, encoding
+    if not hasattr(translation, 'ugettext_lazy'):
+        translation.ugettext_lazy = translation.gettext_lazy
+    if not hasattr(translation, 'ugettext'):
+        translation.ugettext = translation.gettext
+    if not hasattr(translation, 'ungettext_lazy'):
+        translation.ungettext_lazy = translation.ngettext_lazy
+    if not hasattr(translation, 'ungettext'):
+        translation.ungettext = translation.ngettext
+    if not hasattr(encoding, 'smart_text'):
+        encoding.smart_text = encoding.smart_str
+    if not hasattr(encoding, 'force_text'):
+        encoding.force_text = encoding.force_str
+except ImportError:
+    pass
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
