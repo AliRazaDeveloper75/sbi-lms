@@ -1,5 +1,10 @@
 import os
 from decouple import config
+from django.utils import translation
+
+# Fix for django-jet compatibility with Django 4.0+
+if not hasattr(translation, 'ugettext_lazy'):
+    translation.ugettext_lazy = translation.gettext_lazy
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
