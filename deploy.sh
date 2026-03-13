@@ -19,7 +19,8 @@ echo "Navigating to project directory: $PROJECT_DIR"
 cd $PROJECT_DIR
 
 echo "Pulling latest code from GitHub..."
-git pull origin main
+git fetch origin main
+git reset --hard origin/main
 
 echo "Activating virtual environment..."
 source $VIRTUAL_ENV_DIR/bin/activate
