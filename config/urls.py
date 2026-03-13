@@ -6,7 +6,7 @@ from django.views import defaults as default_views
 from django.conf.urls.i18n import i18n_patterns
 from django.views.i18n import JavaScriptCatalog
 
-admin.site.site_header = "Dj-LMS Admin"
+admin.site.site_header = "Genext "
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -27,6 +27,7 @@ urlpatterns += i18n_patterns(
     path("quiz/", include("quiz.urls")),
     path("payments/", include("payments.urls")),
     path("accounts/api/", include("accounts.api.urls", namespace="accounts-api")),
+    prefix_default_language=False
 )
 
 
