@@ -8,6 +8,12 @@
 # Exit immediately if a command exits with a non-zero status
 set -e
 
+# Fix potential Windows line ending issues (CRLF to LF)
+# This is a precaution in case the file was uploaded with CRLF
+if command -v sed >/dev/null 2>&1; then
+    sed -i 's/\r$//' "$0" 2>/dev/null || true
+fi
+
 echo "Starting Deployment process..."
 
 # Define your project root here (where you cloned your repo on EC2)
