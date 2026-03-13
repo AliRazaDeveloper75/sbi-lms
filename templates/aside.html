@@ -10,7 +10,7 @@
 
 <div id="side-nav">
 	<div class="main-menu">
-		<div class="top-side text-center py-4" style="background-image: url({% static 'img/dotted.jpg' %});">
+		<div class="top-side text-center py-4">
 			<div class="desktop-hide">
 				<div class="toggle-btn" onclick="toggleSidebar()">
 					<i class="fas fa-times"></i>
@@ -18,9 +18,9 @@
 			</div>
 			<a href="/" class="d-flex align-items-center justify-content-center text-decoration-none">
 				<!-- <span class="fs-4 fw-bold text-dark">Genext <span class="text-warning">LMS</span></span> -->
-				<img src="{% static 'img/d-logo.png' %}" alt="Logo" class="logo" style="width: 250px; height: auto;" />
+				<img src="https://raw.githubusercontent.com/AliRazaDeveloper75/sbi-lms/main/static/img/d-logo.png" alt="Logo" class="logo" style="width: 250px; height: auto;" />
 			</a>
-			<p class="text-orange">
+			<p class="text-orange" >
 				<mark>
 					<i class="far fa-hand-point-right"></i>
 					{{ request.user.get_user_role }}
