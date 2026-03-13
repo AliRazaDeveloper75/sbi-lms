@@ -69,11 +69,11 @@ table .info{
         <p><strong>{% trans 'ID No.:' %}</strong> {{ user.username }}</p>
       </div>
 
-      {% if user.is_student %}
-      <hr>
+      {% if user.is_student %} 
+      <hr> 
       <p class="h5">{% trans 'Applicant Info' %}</p>
       <div class="dashboard-description">
-        <p><strong>{% trans 'School:' %}</strong>{% trans 'Hawas Preparatory School' %}</p>
+        <p><strong>{% trans 'School:' %}</strong>{% trans 'SBI LMS' %}</p>
         <p><strong>{% trans 'Level:' %}</strong> {{ level.level }}</p>
       </div>
       {% endif %}
