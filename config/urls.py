@@ -7,7 +7,7 @@ from django.conf.urls.i18n import i18n_patterns
 from django.views.i18n import JavaScriptCatalog
 
 # Fix for django-jet compatibility with Django 4.0+
-import django.conf.urls
+import django.config.urls
 if not hasattr(django.conf.urls, 'url'):
     django.conf.urls.url = re_path
 

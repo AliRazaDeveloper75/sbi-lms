@@ -2,7 +2,14 @@ import os
 from decouple import config
 from django.utils import translation
 
-# Fix for django-jet compatibility with Django 4.0+
+# Fix for django-jet compatibility with Django 4.0+ and Python 3.10+
+import collections
+try:
+    import collections.abc
+    collections.MutableSet = collections.abc.MutableSet
+except AttributeError:
+    pass
+
 try:
     from django.utils import translation, encoding
     if not hasattr(translation, 'ugettext_lazy'):
