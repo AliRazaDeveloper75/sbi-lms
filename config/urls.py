@@ -1,10 +1,15 @@
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
 from django.conf import settings
 from django.conf.urls.static import static
 from django.views import defaults as default_views
 from django.conf.urls.i18n import i18n_patterns
 from django.views.i18n import JavaScriptCatalog
+
+# Fix for django-jet compatibility with Django 4.0+
+import django.conf.urls
+if not hasattr(django.conf.urls, 'url'):
+    django.conf.urls.url = re_path
 
 admin.site.site_header = "Genext "
 
