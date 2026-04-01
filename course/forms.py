@@ -99,10 +99,31 @@ class UploadFormVideo(forms.ModelForm):
         model = UploadVideo
         fields = (
             "title",
+            "youtube_link",
             "video",
+            "summary",
         )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["title"].widget.attrs.update({"class": "form-control"})
+        self.fields["youtube_link"].widget.attrs.update(
+            {"class": "form-control", "placeholder": "https://www.youtube.com/watch?v=..."}
+        )
         self.fields["video"].widget.attrs.update({"class": "form-control"})
+        self.fields["summary"].widget.attrs.update(
+            {"class": "form-control", "rows": 3, "placeholder": "Optional description..."}
+        )
+        self.fields["youtube_link"].required = False
+        self.fields["video"].required = False
+        self.fields["summary"].required = False
+
+    def clean(self):
+        cleaned_data = super().clean()
+        youtube_link = cleaned_data.get("youtube_link")
+        video = cleaned_data.get("video")
+        if not youtube_link and not video:
+            raise forms.ValidationError(
+                "Please provide either a YouTube link or upload a video file."
+            )
+        return cleaned_data

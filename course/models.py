@@ -243,12 +243,19 @@ class UploadVideo(models.Model):
     title = models.CharField(max_length=100)
     slug = models.SlugField(blank=True, unique=True)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    youtube_link = models.URLField(
+        blank=True,
+        null=True,
+        help_text=_("YouTube video link (optional if video file is uploaded)"),
+    )
     video = models.FileField(
         upload_to="course_videos/",
         help_text=_("Valid video formats: mp4, mkv, wmv, 3gp, f4v, avi, mp3"),
         validators=[
             FileExtensionValidator(["mp4", "mkv", "wmv", "3gp", "f4v", "avi", "mp3"])
         ],
+        null=True,
+        blank=True,
     )
     summary = models.TextField(null=True, blank=True)
     timestamp = models.DateTimeField(auto_now=False, auto_now_add=True, null=True)
@@ -261,8 +268,34 @@ class UploadVideo(models.Model):
             "video_single", kwargs={"slug": self.course.slug, "video_slug": self.slug}
         )
 
+    @property
+    def youtube_video_id(self):
+        if not self.youtube_link:
+            return None
+        from urllib.parse import urlparse, parse_qs
+        url = self.youtube_link.strip()
+        if "youtu.be/" in url:
+            return url.split("youtu.be/")[-1].split("?")[0]
+        elif "youtube.com/watch" in url:
+            parsed = urlparse(url)
+            return parse_qs(parsed.query).get("v", [None])[0]
+        elif "youtube.com/embed/" in url:
+            return url.split("youtube.com/embed/")[-1].split("?")[0]
+        elif "youtube.com/shorts/" in url:
+            return url.split("youtube.com/shorts/")[-1].split("?")[0]
+        return None
+
+    @property
+    def youtube_embed_url(self):
+        video_id = self.youtube_video_id
+        if video_id:
+            # Use privacy-enhanced nocookie domain + enablejsapi for IFrame API
+            return f"https://www.youtube-nocookie.com/embed/{video_id}?enablejsapi=1&rel=0&modestbranding=1"
+        return None
+
     def delete(self, *args, **kwargs):
-        self.video.delete()
+        if self.video:
+            self.video.delete()
         super().delete(*args, **kwargs)
 
 

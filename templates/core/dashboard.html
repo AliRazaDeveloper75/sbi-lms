@@ -17,7 +17,7 @@
 
 {% include 'snippets/messages.html' %}
 
-<div class="d-flex justify-content-between align-items-center mb-4">
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
 	<h1 class="title-1">{% trans 'Dashboard' %}</h1>
 	<div class="dropdown">
 		<button type="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown"
@@ -110,25 +110,25 @@
 </div>
 
 <div class="row px-2">
-	<div class="col-md-6 p-2">
+	<div class="col-12 col-md-6 p-2">
 		<div class="chart-wrap">
 			<i class="fas fa-expand-alt"></i>
 			<canvas id="traffic"></canvas>
 		</div>
 	</div>
-	<div class="col-md-6 p-2">
+	<div class="col-12 col-md-6 p-2">
 		<div class="chart-wrap">
 			<i class="fas fa-expand-alt"></i>
 			<canvas id="enrollement"></canvas>
 		</div>
 	</div>
-	<div class="col-md-6 p-2">
+	<div class="col-12 col-md-6 p-2">
 		<div class="chart-wrap">
 			<i class="fas fa-expand-alt"></i>
 			<canvas id="students_grade"></canvas>
 		</div>
 	</div>
-	<div class="col-md-6 p-2">
+	<div class="col-12 col-md-6 p-2">
 		<div class="card w-100 h-100 p-3">
 			<h5>{% trans 'Latest activities' %}</h5>
 			<ul class="ps-2 small">
@@ -145,17 +145,23 @@
 <div class="bg-white p-3">
 	<h5 class="border-bottom pb-2">{% trans 'School Demographics' %}</h5>
 	<div class="row">
-		<div class="col-md-4">
-			<i class="fas fa-expand-alt"></i>
-			<canvas id="gender"></canvas>
+		<div class="col-12 col-md-4 p-2">
+			<div class="chart-wrap">
+				<i class="fas fa-expand-alt"></i>
+				<canvas id="gender"></canvas>
+			</div>
 		</div>
-		<div class="col-md-4">
-			<i class="fas fa-expand-alt"></i>
-			<canvas id="ethnicity"></canvas>
+		<div class="col-12 col-md-4 p-2">
+			<div class="chart-wrap">
+				<i class="fas fa-expand-alt"></i>
+				<canvas id="ethnicity"></canvas>
+			</div>
 		</div>
-		<div class="col-md-4">
-			<i class="fas fa-expand-alt"></i>
-			<canvas id="language"></canvas>
+		<div class="col-12 col-md-4 p-2">
+			<div class="chart-wrap">
+				<i class="fas fa-expand-alt"></i>
+				<canvas id="language"></canvas>
+			</div>
 		</div>
 	</div>
 </div>
@@ -169,12 +175,12 @@
 <script src="{% static 'js/dashboard.js' %}"></script>
 <script>
 	$('.fa-expand-alt').click(function () {
-		if ($(this).parent('.chart-wrap').parent('.col-md-6').hasClass('expand')) {
-			$('.col-md-6.expand').removeClass('expand');
-		}
-		else {
-			$('.col-md-6.expand')?.removeClass('expand');
-			$(this).parent('.chart-wrap').parent('.col-md-6').addClass('expand');
+		var $col = $(this).closest('[class*="col-"]');
+		if ($col.hasClass('expand')) {
+			$('[class*="col-"].expand').removeClass('expand');
+		} else {
+			$('[class*="col-"].expand').removeClass('expand');
+			$col.addClass('expand');
 		}
 	})
 </script>

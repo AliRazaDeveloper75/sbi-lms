@@ -14,26 +14,99 @@
         <li class="breadcrumb-item active" aria-current="page">{{ video.title }}</li>
     </ol>
 </nav>
-    
-<p class="title-1">{{ video.title }}</p>
-<br><br>
 
-<style>
-    video{
-        max-width: 100%; 
-        -webkit-box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
-        box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.16), 0px 2px 10px 0px rgba(0,0,0,0.12);
-    }
-</style>
+<p class="title-1">{{ video.title }}</p>
+<br>
 
 <div class="col-md-10 mx-auto d-block">
-    <div class=""><video src="{{ video.video.url }}" controls ></video></div>
-    <p><i class="fas fa-calendar"></i> {{ video.timestamp|timesince }} {% trans 'ago' %}</p>
-    {% if video.summary %}
-    <p class="text-orange text-center">{{ video.summary }}</p>
+
+    {% if video.youtube_video_id %}
+        {# --- YouTube player via IFrame API --- #}
+        <div id="yt-wrapper" class="mb-3" style="position:relative; box-shadow:0 2px 10px rgba(0,0,0,0.2);">
+            {# IFrame API renders into this div #}
+            <div id="yt-player" style="width:100%; aspect-ratio:16/9;"></div>
+
+            {# Fallback shown only when YouTube blocks the embed #}
+            <div id="yt-blocked" style="display:none; width:100%; aspect-ratio:16/9;
+                background:#1a1a2e; color:#fff; align-items:center; justify-content:center;
+                flex-direction:column; text-align:center; padding:2rem;">
+                <i class="fab fa-youtube" style="font-size:72px; color:#FF0000; margin-bottom:1rem;"></i>
+                <h5>{% trans 'Lecture video is restricted by YouTube.' %}</h5>
+                <p class="text-muted small mb-3">
+                    {% trans 'This video cannot be embedded. The instructor must enable embedding or remove copyright-restricted content from the video.' %}
+                </p>
+                <a href="{{ video.youtube_link }}" target="_blank" rel="noopener noreferrer"
+                   class="btn btn-danger">
+                    <i class="fab fa-youtube"></i> {% trans 'Watch Lecture on YouTube' %}
+                </a>
+            </div>
+        </div>
+
+    {% elif video.video %}
+        {# --- Uploaded video file --- #}
+        <div class="mb-3">
+            <video src="{{ video.video.url }}" controls
+                style="max-width:100%; display:block;
+                    box-shadow:0 2px 5px rgba(0,0,0,0.16), 0 2px 10px rgba(0,0,0,0.12);">
+            </video>
+        </div>
+
     {% else %}
-    {% trans 'No video description set.' %}
+        <div class="alert alert-warning">{% trans 'No video available for this lecture.' %}</div>
+    {% endif %}
+
+    <p class="mt-2"><i class="fas fa-calendar"></i> {{ video.timestamp|timesince }} {% trans 'ago' %}</p>
+    {% if video.summary %}
+        <p class="text-orange text-center">{{ video.summary }}</p>
     {% endif %}
 </div>
 
 {% endblock content %}
+
+{% block js %}
+{% if video.youtube_video_id %}
+<script>
+var YT_VIDEO_ID = "{{ video.youtube_video_id }}";
+
+// Load YouTube IFrame API
+var tag = document.createElement('script');
+tag.src = "https://www.youtube.com/iframe_api";
+var firstScriptTag = document.getElementsByTagName('script')[0];
+firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+var ytPlayer;
+
+function onYouTubeIframeAPIReady() {
+    ytPlayer = new YT.Player('yt-player', {
+        videoId: YT_VIDEO_ID,
+        host: 'https://www.youtube-nocookie.com',
+        playerVars: {
+            rel: 0,
+            modestbranding: 1,
+            origin: window.location.origin
+        },
+        events: {
+            onReady: function (e) {
+                // Player loaded successfully — ensure fallback stays hidden
+                document.getElementById('yt-blocked').style.display = 'none';
+            },
+            onError: function (e) {
+                // Error codes: 2=bad ID, 5=HTML5 error, 100=not found,
+                // 101/150=embedding blocked by owner
+                showBlocked();
+            }
+        }
+    });
+}
+
+function showBlocked() {
+    var wrapper = document.getElementById('yt-player');
+    var blocked = document.getElementById('yt-blocked');
+    if (wrapper) wrapper.style.display = 'none';
+    if (blocked) {
+        blocked.style.display = 'flex';
+    }
+}
+</script>
+{% endif %}
+{% endblock %}

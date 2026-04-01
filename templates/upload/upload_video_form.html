@@ -14,8 +14,8 @@
         <li class="breadcrumb-item active" aria-current="page">{% trans 'Video upload' %}</li>
     </ol>
 </nav>
-    
-<p class="title-1">{% trans 'Video upload for' %} {{ course|truncatechars:25 }}</p>
+
+<p class="title-1">{% trans 'Video Upload For' %} {{ course|truncatechars:25 }}</p>
 <div class="title-line"></div><br>
 
 {% include 'snippets/messages.html' %}
@@ -26,15 +26,105 @@
     <p class="form-title">{% trans 'Video Upload Form' %}</p>
     <div class="card-body">
         <form action="" method="POST" enctype="multipart/form-data">{% csrf_token %}
-            {{ form|crispy }}
-            
-            <div class="form-group">
-                <button class="btn btn-primary" type="submit">{% trans 'Upload' %}</button>
+
+            <!-- Title field -->
+            <div class="mb-3">
+                <label class="form-label fw-bold">{% trans 'Title' %} *</label>
+                <input type="text" name="title" class="form-control" value="{{ form.title.value|default:'' }}" required>
+                {% if form.title.errors %}<div class="text-danger small">{{ form.title.errors }}</div>{% endif %}
+            </div>
+
+            <!-- Summary field -->
+            <div class="mb-3">
+                <label class="form-label fw-bold">{% trans 'Summary' %}</label>
+                <textarea name="summary" class="form-control" rows="3" placeholder="{% trans 'Optional description...' %}">{{ form.summary.value|default:'' }}</textarea>
+            </div>
+
+            <!-- Toggle: YouTube or File Upload -->
+            <div class="mb-3">
+                <label class="form-label fw-bold">{% trans 'Lecture Type' %} *</label>
+                <div class="d-flex gap-3 mb-3">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="lecture_type" id="typeYoutube" value="youtube"
+                            {% if form.youtube_link.value %}checked{% endif %}>
+                        <label class="form-check-label" for="typeYoutube">
+                            <i class="fab fa-youtube text-danger"></i> {% trans 'YouTube Link' %}
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="lecture_type" id="typeFile" value="file"
+                            {% if not form.youtube_link.value %}checked{% endif %}>
+                        <label class="form-check-label" for="typeFile">
+                            <i class="fas fa-file-video text-primary"></i> {% trans 'Upload Video File' %}
+                        </label>
+                    </div>
+                </div>
+
+                <!-- YouTube link input -->
+                <div id="youtubeSection" {% if not form.youtube_link.value %}style="display:none;"{% endif %}>
+                    <label class="form-label">{% trans 'YouTube Video URL' %}</label>
+                    <input type="url" name="youtube_link" id="youtubeInput" class="form-control"
+                        placeholder="https://www.youtube.com/watch?v=..."
+                        value="{{ form.youtube_link.value|default:'' }}">
+                    <div class="form-text">{% trans 'Paste the full YouTube video link.' %}</div>
+                    {% if form.youtube_link.errors %}<div class="text-danger small">{{ form.youtube_link.errors }}</div>{% endif %}
+                </div>
+
+                <!-- File upload input -->
+                <div id="fileSection" {% if form.youtube_link.value %}style="display:none;"{% endif %}>
+                    <label class="form-label">{% trans 'Video File' %}</label>
+                    <input type="file" name="video" id="videoInput" class="form-control" accept=".mp4,.mkv,.wmv,.3gp,.f4v,.avi,.mp3">
+                    <div class="form-text">{% trans 'Valid formats: mp4, mkv, wmv, 3gp, f4v, avi, mp3' %}</div>
+                    {% if form.video.errors %}<div class="text-danger small">{{ form.video.errors }}</div>{% endif %}
+                </div>
+            </div>
+
+            {% if form.non_field_errors %}
+            <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+            {% endif %}
+
+            <div class="form-group mt-3">
+                <button class="btn btn-primary" type="submit">
+                    <i class="fas fa-upload"></i> {% trans 'Upload' %}
+                </button>
                 <a class="btn btn-danger" href="{% url 'course_detail' course.slug %}" style="float: right;">{% trans 'Cancel' %}</a>
             </div>
         </form>
     </div>
 </div>
 </div>
+</div>
+
+<script>
+(function () {
+    const radios = document.querySelectorAll('input[name="lecture_type"]');
+    const youtubeSection = document.getElementById('youtubeSection');
+    const fileSection = document.getElementById('fileSection');
+    const youtubeInput = document.getElementById('youtubeInput');
+    const videoInput = document.getElementById('videoInput');
+
+    function toggle(type) {
+        if (type === 'youtube') {
+            youtubeSection.style.display = '';
+            fileSection.style.display = 'none';
+            videoInput.value = '';
+        } else {
+            youtubeSection.style.display = 'none';
+            fileSection.style.display = '';
+            youtubeInput.value = '';
+        }
+    }
+
+    radios.forEach(function (radio) {
+        radio.addEventListener('change', function () {
+            toggle(this.value);
+        });
+    });
+
+    // Set initial state
+    const checked = document.querySelector('input[name="lecture_type"]:checked');
+    if (checked) toggle(checked.value);
+})();
+</script>
 
 {% endblock content %}
