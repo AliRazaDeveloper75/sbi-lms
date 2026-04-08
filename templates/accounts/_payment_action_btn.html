@@ -1,0 +1,16 @@
+{% load i18n %}
+{% if student.has_active_access %}
+    <a href="{% url 'update_payment_status' student.pk %}"
+       class="btn btn-sm btn-outline-danger"
+       onclick="return confirm('Revoke access for {{ student.student.get_full_name }}?')">
+        <i class="fas fa-ban me-1"></i>{% trans 'Revoke' %}
+    </a>
+{% elif student.payment_status and not student.has_active_access %}
+    <a href="{% url 'update_payment_status' student.pk %}" class="btn btn-sm btn-primary">
+        <i class="fas fa-redo me-1"></i>{% trans 'Renew' %}
+    </a>
+{% else %}
+    <a href="{% url 'update_payment_status' student.pk %}" class="btn btn-sm btn-success">
+        <i class="fas fa-check me-1"></i>{% trans 'Approve' %}
+    </a>
+{% endif %}

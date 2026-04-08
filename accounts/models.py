@@ -4,6 +4,7 @@ from django.contrib.auth.models import AbstractUser, UserManager
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 from django.db.models import Q
+from django.utils import timezone
 from PIL import Image
 
 from course.models import Program
@@ -158,8 +159,34 @@ class Student(models.Model):
     # id_number = models.CharField(max_length=20, unique=True, blank=True)
     level = models.CharField(max_length=25, choices=LEVEL, null=True)
     program = models.ForeignKey(Program, on_delete=models.CASCADE, null=True)
+    payment_status = models.BooleanField(
+        default=False,
+        help_text="Check to grant student full access to all features after payment is confirmed.",
+    )
+    payment_expiry_date = models.DateField(
+        null=True,
+        blank=True,
+        help_text="Date when the student's access expires. Leave blank for unlimited.",
+    )
 
     objects = StudentManager()
+
+    @property
+    def has_active_access(self):
+        """Returns True only if payment is done AND not expired."""
+        if not self.payment_status:
+            return False
+        if self.payment_expiry_date and self.payment_expiry_date < timezone.now().date():
+            return False
+        return True
+
+    @property
+    def days_remaining(self):
+        """Returns days left, 0 if expired, None if no expiry set."""
+        if not self.payment_expiry_date:
+            return None
+        delta = (self.payment_expiry_date - timezone.now().date()).days
+        return max(delta, 0)
 
     class Meta:
         ordering = ("-student__date_joined",)

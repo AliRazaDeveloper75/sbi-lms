@@ -498,6 +498,88 @@ def delete_student(request, pk):
 
 @login_required
 @admin_required
+def payment_management(request):
+    """Dedicated payment management page with tab-based overview."""
+    from django.utils import timezone
+
+    today = timezone.now().date()
+    all_students = Student.objects.all().select_related("student", "program").order_by(
+        "student__first_name"
+    )
+
+    active_students = [s for s in all_students if s.has_active_access]
+    pending_students = [s for s in all_students if not s.payment_status]
+    expired_students = [
+        s for s in all_students if s.payment_status and not s.has_active_access
+    ]
+
+    context = {
+        "title": "Payment Management",
+        "all_students": all_students,
+        "active_students": active_students,
+        "pending_students": pending_students,
+        "expired_students": expired_students,
+        "active_count": len(active_students),
+        "pending_count": len(pending_students),
+        "expired_count": len(expired_students),
+        "total_count": all_students.count(),
+    }
+    return render(request, "accounts/payment_management.html", context)
+
+
+@login_required
+@admin_required
+def update_payment_status(request, pk):
+    """
+    GET  → show a form to set access duration (days, minimum 30).
+    POST → approve payment and set expiry date.
+    If student is already paid, clicking revokes access immediately.
+    """
+    from datetime import timedelta
+    from django.utils import timezone
+
+    student = get_object_or_404(Student, pk=pk)
+
+    # If already paid → revoke
+    if student.payment_status:
+        student.payment_status = False
+        student.payment_expiry_date = None
+        student.save()
+        messages.warning(
+            request,
+            f"Payment access revoked for {student.student.get_full_name}.",
+        )
+        return redirect("student_list")
+
+    # Not yet paid → show form to set days
+    if request.method == "POST":
+        try:
+            days = int(request.POST.get("days", 30))
+            if days < 30:
+                days = 30  # minimum 30 days
+        except (ValueError, TypeError):
+            days = 30
+
+        expiry = timezone.now().date() + timedelta(days=days)
+        student.payment_status = True
+        student.payment_expiry_date = expiry
+        student.save()
+        messages.success(
+            request,
+            f"Payment approved for {student.student.get_full_name}. "
+            f"Access granted for {days} days (expires {expiry}).",
+        )
+        return redirect("student_list")
+
+    return render(
+        request,
+        "accounts/set_payment_access.html",
+        {"student": student, "title": "Set Payment Access"},
+    )
+
+
+@login_required
+@admin_required
 def edit_student_program(request, pk):
 
     instance = get_object_or_404(Student, student_id=pk)

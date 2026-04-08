@@ -34,7 +34,7 @@
 		{% url 'add_score' as ascore %} {% url 'grade_results' as vr %}{% url 'ass_results' as ar %}
 		{% url 'course_registration' as cr %} {% url 'edit_profile' as ep %} {% url 'change_password' as cp %}
 		{% url 'quiz_progress' as qpr %} {% url 'quiz_marking' as qce %} {% url 'user_course_list' as ucl %}
-		{% url 'admin_panel' as admin_p %}
+		{% url 'admin_panel' as admin_p %} {% url 'payment_management' as pay_mgmt %}
 		
 
 
@@ -61,11 +61,20 @@
 			<li class="{% if request.path == stu %}active{% endif %}">
 				<a href="{% url 'student_list' %}"><i class="fas fa-user-graduate"></i>{% trans 'Students' %}</a>
 			</li>
+			<li class="{% if request.path == pay_mgmt %}active{% endif %}">
+				<a href="{% url 'payment_management' %}"><i class="fas fa-credit-card"></i>{% trans 'Payment Management' %}</a>
+			</li>
 			{% endif %}
 
 			{% if request.user.is_lecturer or request.user.is_student %}
 			<li class="{% if request.path == ucl %}active{% endif %}">
+				{% if request.user.is_student and not payment_status %}
+				<a href="#" class="text-muted" title="{% trans 'Payment required to access this feature' %}" onclick="return false;" style="cursor: not-allowed; opacity: 0.5;">
+					<i class="fas fa-book"></i>{% trans 'My Courses' %} <i class="fas fa-lock ms-1 small"></i>
+				</a>
+				{% else %}
 				<a href="{% url 'user_course_list' %}"><i class="fas fa-book"></i>{% trans 'My Courses' %}</a>
+				{% endif %}
 			</li>
 			{% endif %}
 
@@ -103,17 +112,59 @@
 			{% endif %}
 
 			{% if request.user.is_student %}
+			{% if not payment_status %}
+			<li>
+				<div class="alert alert-warning py-1 px-2 mx-2 small mb-1" role="alert">
+					<i class="fas fa-lock me-1"></i>{% trans 'Payment pending — contact admin to unlock all features.' %}
+				</div>
+			</li>
+			{% elif days_remaining is not None and days_remaining <= 7 %}
+			<li>
+				<div class="alert alert-danger py-1 px-2 mx-2 small mb-1" role="alert">
+					<i class="fas fa-exclamation-triangle me-1"></i>
+					{% if days_remaining == 0 %}
+						{% trans 'Access expired! Contact admin.' %}
+					{% else %}
+						{{ days_remaining }} {% trans 'days left — renew soon!' %}
+					{% endif %}
+				</div>
+			</li>
+			{% endif %}
 			<li class="{% if request.path == qpr %}active{% endif %}">
+				{% if not payment_status %}
+				<a href="#" class="text-muted" title="{% trans 'Payment required' %}" onclick="return false;" style="cursor: not-allowed; opacity: 0.5;">
+					<i class="fas fa-record-vinyl"></i>{% trans 'Quiz Progress Rec' %} <i class="fas fa-lock ms-1 small"></i>
+				</a>
+				{% else %}
 				<a href="{% url 'quiz_progress' %}"><i class="fas fa-record-vinyl"></i>{% trans 'Quiz Progress Rec' %}</a>
+				{% endif %}
 			</li>
 			<li class="{% if request.path == vr %}active{% endif %}">
+				{% if not payment_status %}
+				<a href="#" class="text-muted" title="{% trans 'Payment required' %}" onclick="return false;" style="cursor: not-allowed; opacity: 0.5;">
+					<i class="fa fa-spell-check"></i>{% trans 'Grade Results' %} <i class="fas fa-lock ms-1 small"></i>
+				</a>
+				{% else %}
 				<a href="{% url 'grade_results' %}"><i class="fa fa-spell-check"></i>{% trans 'Grade Results' %}</a>
+				{% endif %}
 			</li>
 			<li class="{% if request.path == ar %}active{% endif %}">
+				{% if not payment_status %}
+				<a href="#" class="text-muted" title="{% trans 'Payment required' %}" onclick="return false;" style="cursor: not-allowed; opacity: 0.5;">
+					<i class="fa fa-list-ol"></i>{% trans 'Assesment Results' %} <i class="fas fa-lock ms-1 small"></i>
+				</a>
+				{% else %}
 				<a href="{% url 'ass_results' %}"><i class="fa fa-list-ol"></i> {% trans 'Assesment Results' %}</a>
+				{% endif %}
 			</li>
 			<li class="{% if request.path == cr %}active{% endif %}">
+				{% if not payment_status %}
+				<a href="#" class="text-muted" title="{% trans 'Payment required' %}" onclick="return false;" style="cursor: not-allowed; opacity: 0.5;">
+					<i class="fas fa-plus"></i>{% trans 'Add' %} &amp;{% trans 'Drop Course' %} <i class="fas fa-lock ms-1 small"></i>
+				</a>
+				{% else %}
 				<a href="{% url 'course_registration' %}"><i class="fas fa-plus"></i>{% trans 'Add' %} &amp;{% trans 'Drop Course' %}</a>
+				{% endif %}
 			</li>
 			{% endif %}
 			<br />

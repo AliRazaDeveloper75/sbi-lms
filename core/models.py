@@ -94,3 +94,19 @@ class ActivityLog(models.Model):
 
     def __str__(self):
         return f"[{self.created_at}]{self.message}"
+
+
+class Notification(models.Model):
+    title = models.CharField(max_length=200)
+    message = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_active = models.BooleanField(
+        default=True,
+        help_text="Only active notifications are shown to students.",
+    )
+
+    class Meta:
+        ordering = ("-created_at",)
+
+    def __str__(self):
+        return self.title

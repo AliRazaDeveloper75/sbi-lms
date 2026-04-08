@@ -1,7 +1,7 @@
 from django import forms
 from django.db import transaction
 
-from .models import NewsAndEvents, Session, Semester, SEMESTER
+from .models import NewsAndEvents, Session, Semester, SEMESTER, Notification
 
 
 # news and events
@@ -19,6 +19,17 @@ class NewsAndEventsForm(forms.ModelForm):
         self.fields["title"].widget.attrs.update({"class": "form-control"})
         self.fields["summary"].widget.attrs.update({"class": "form-control"})
         self.fields["posted_as"].widget.attrs.update({"class": "form-control"})
+
+
+class NotificationForm(forms.ModelForm):
+    class Meta:
+        model = Notification
+        fields = ("title", "message")
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["title"].widget.attrs.update({"class": "form-control"})
+        self.fields["message"].widget.attrs.update({"class": "form-control", "rows": 4})
 
 
 class SessionForm(forms.ModelForm):

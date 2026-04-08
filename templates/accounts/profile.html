@@ -85,6 +85,34 @@
                     <p><strong>{% trans 'Institute:' %} </strong>{% trans 'Genext – Empowering digital skills through training affiliated with the NAVTTC National Vocational and Technical Training Commission.' %}</p>
                     <p><strong>{% trans 'Level:' %} </strong>{{ level.level }}</p>
                 </div>
+                <hr>
+                <p class="fw-bold"><i class="fas fa-credit-card"></i> {% trans 'Payment Status' %}</p>
+                <div class="dashboard-description">
+                    {% if payment_status %}
+                    <span class="badge bg-success fs-6"><i class="fas fa-check-circle me-1"></i>{% trans 'Payment Done — Full Access Granted' %}</span>
+                    {% if payment_expiry_date %}
+                    <div class="mt-2">
+                        <p class="mb-1"><strong>{% trans 'Access Expires:' %}</strong> {{ payment_expiry_date }}</p>
+                        {% if days_remaining is not None %}
+                            {% if days_remaining == 0 %}
+                            <span class="badge bg-danger">{% trans 'Access Expired' %}</span>
+                            {% elif days_remaining <= 7 %}
+                            <span class="badge bg-warning text-dark">
+                                <i class="fas fa-clock me-1"></i>{{ days_remaining }} {% trans 'days remaining — contact admin to renew' %}
+                            </span>
+                            {% else %}
+                            <span class="badge bg-info text-dark">
+                                <i class="fas fa-calendar-check me-1"></i>{{ days_remaining }} {% trans 'days remaining' %}
+                            </span>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                    {% else %}
+                    <span class="badge bg-danger fs-6"><i class="fas fa-times-circle me-1"></i>{% trans 'Payment Pending — Limited Access' %}</span>
+                    <p class="mt-2 text-muted small">{% trans 'Please contact admin to complete your payment and unlock all features.' %}</p>
+                    {% endif %}
+                </div>
                 {% endif %}
     
                 <hr>

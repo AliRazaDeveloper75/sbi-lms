@@ -4,8 +4,8 @@ from django.contrib.auth.decorators import login_required
 
 from accounts.decorators import admin_required, lecturer_required
 from accounts.models import User, Student
-from .forms import SessionForm, SemesterForm, NewsAndEventsForm
-from .models import NewsAndEvents, ActivityLog, Session, Semester
+from .forms import SessionForm, SemesterForm, NewsAndEventsForm, NotificationForm
+from .models import NewsAndEvents, ActivityLog, Session, Semester, Notification
 
 
 # ########################################################
@@ -33,11 +33,42 @@ def courses_view(request):
 @login_required
 def home_view(request):
     items = NewsAndEvents.objects.all().order_by("-updated_date")
+    notifications = Notification.objects.filter(is_active=True)
     context = {
         "title": "News & Events",
         "items": items,
+        "notifications": notifications,
     }
     return render(request, "core/index.html", context)
+
+
+@login_required
+@admin_required
+def notification_add(request):
+    if request.method == "POST":
+        form = NotificationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Notification sent to all students.")
+            return redirect("home")
+        else:
+            messages.error(request, "Please correct the error(s) below.")
+    else:
+        form = NotificationForm()
+    return render(
+        request,
+        "core/notification_add.html",
+        {"title": "Send Notification", "form": form},
+    )
+
+
+@login_required
+@admin_required
+def notification_delete(request, pk):
+    notification = get_object_or_404(Notification, pk=pk)
+    notification.delete()
+    messages.success(request, "Notification deleted.")
+    return redirect("home")
 
 
 @login_required

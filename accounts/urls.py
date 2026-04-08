@@ -26,8 +26,10 @@ from .views import (
     ParentAdd,
     validate_username,
     register,
-    render_lecturer_pdf_list,  # new
-    render_student_pdf_list,  # new
+    render_lecturer_pdf_list,
+    render_student_pdf_list,
+    update_payment_status,
+    payment_management,
 )
 
 # from .forms import EmailValidationOnForgotPassword
@@ -63,6 +65,8 @@ urlpatterns = [
     path(
         "create_students_pdf_list/", render_student_pdf_list, name="student_list_pdf"
     ),  # new
+    path("student/<int:pk>/payment-status/", update_payment_status, name="update_payment_status"),
+    path("payments/", payment_management, name="payment_management"),
     # path('add-student/', StudentAddView.as_view(), name='add_student'),
     # path('programs/course/delete/<int:pk>/', course_delete, name='delete_course'),
     # Setting urls

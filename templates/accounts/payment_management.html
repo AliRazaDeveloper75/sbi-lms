@@ -1,0 +1,321 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{{ title }} | {% trans 'Learning management system' %}{% endblock title %}
+{% load static %}
+
+{% block content %}
+
+<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'home' %}">{% trans 'Home' %}</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{% trans 'Payment Management' %}</li>
+    </ol>
+</nav>
+
+{% include 'snippets/messages.html' %}
+
+<div class="d-flex align-items-center justify-content-between mb-3">
+    <h4 class="fw-bold mb-0"><i class="fas fa-credit-card me-2 text-primary"></i>{% trans 'Payment Management' %}</h4>
+    <a href="{% url 'student_list' %}" class="btn btn-sm btn-outline-secondary">
+        <i class="fas fa-users me-1"></i>{% trans 'All Students' %}
+    </a>
+</div>
+
+<!-- Summary Cards -->
+<div class="row g-3 mb-4">
+    <div class="col-6 col-md-3">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body text-center py-3">
+                <div class="fs-2 fw-bold text-primary">{{ total_count }}</div>
+                <div class="small text-muted"><i class="fas fa-users me-1"></i>{% trans 'Total Students' %}</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card border-0 shadow-sm h-100" style="border-left: 4px solid #198754 !important;">
+            <div class="card-body text-center py-3">
+                <div class="fs-2 fw-bold text-success">{{ active_count }}</div>
+                <div class="small text-muted"><i class="fas fa-check-circle me-1"></i>{% trans 'Active' %}</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body text-center py-3">
+                <div class="fs-2 fw-bold text-danger">{{ pending_count }}</div>
+                <div class="small text-muted"><i class="fas fa-clock me-1"></i>{% trans 'Pending' %}</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body text-center py-3">
+                <div class="fs-2 fw-bold text-warning">{{ expired_count }}</div>
+                <div class="small text-muted"><i class="fas fa-exclamation-triangle me-1"></i>{% trans 'Expired' %}</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tabs -->
+<ul class="nav nav-tabs mb-0" id="paymentTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active fw-semibold" id="all-tab" data-bs-toggle="tab" data-bs-target="#all"
+                type="button" role="tab">
+            <i class="fas fa-list me-1"></i>{% trans 'All' %}
+            <span class="badge bg-secondary ms-1">{{ total_count }}</span>
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link fw-semibold" id="active-tab" data-bs-toggle="tab" data-bs-target="#active"
+                type="button" role="tab">
+            <i class="fas fa-check-circle me-1 text-success"></i>{% trans 'Active' %}
+            <span class="badge bg-success ms-1">{{ active_count }}</span>
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link fw-semibold" id="pending-tab" data-bs-toggle="tab" data-bs-target="#pending"
+                type="button" role="tab">
+            <i class="fas fa-times-circle me-1 text-danger"></i>{% trans 'Pending' %}
+            <span class="badge bg-danger ms-1">{{ pending_count }}</span>
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link fw-semibold" id="expired-tab" data-bs-toggle="tab" data-bs-target="#expired"
+                type="button" role="tab">
+            <i class="fas fa-exclamation-triangle me-1 text-warning"></i>{% trans 'Expired' %}
+            {% if expired_count > 0 %}
+            <span class="badge bg-warning text-dark ms-1">{{ expired_count }}</span>
+            {% endif %}
+        </button>
+    </li>
+</ul>
+
+<div class="tab-content border border-top-0 rounded-bottom bg-white shadow-sm" id="paymentTabsContent">
+
+    <!-- ALL TAB -->
+    <div class="tab-pane fade show active p-0" id="all" role="tabpanel">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>#</th>
+                        <th>{% trans 'Student' %}</th>
+                        <th>{% trans 'Program' %}</th>
+                        <th>{% trans 'Status' %}</th>
+                        <th>{% trans 'Expiry' %}</th>
+                        <th>{% trans 'Days Left' %}</th>
+                        <th>{% trans 'Action' %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in all_students %}
+                    <tr>
+                        <td class="text-muted small">{{ forloop.counter }}</td>
+                        <td>
+                            <div class="fw-semibold">{{ student.student.get_full_name }}</div>
+                            <small class="text-muted">{{ student.student.username }}</small>
+                        </td>
+                        <td><span class="badge bg-light text-dark border">{{ student.program }}</span></td>
+                        <td>
+                            {% if student.has_active_access %}
+                                <span class="badge bg-success"><i class="fas fa-check-circle me-1"></i>{% trans 'Active' %}</span>
+                            {% elif student.payment_status and not student.has_active_access %}
+                                <span class="badge bg-warning text-dark"><i class="fas fa-exclamation-triangle me-1"></i>{% trans 'Expired' %}</span>
+                            {% else %}
+                                <span class="badge bg-danger"><i class="fas fa-times-circle me-1"></i>{% trans 'Pending' %}</span>
+                            {% endif %}
+                        </td>
+                        <td class="small text-muted">
+                            {% if student.payment_expiry_date %}{{ student.payment_expiry_date }}{% else %}—{% endif %}
+                        </td>
+                        <td>
+                            {% if student.days_remaining is not None %}
+                                {% if student.days_remaining == 0 %}
+                                    <span class="text-danger small fw-bold">{% trans 'Expired' %}</span>
+                                {% elif student.days_remaining <= 7 %}
+                                    <span class="text-warning fw-bold">{{ student.days_remaining }}d</span>
+                                {% else %}
+                                    <span class="text-success">{{ student.days_remaining }}d</span>
+                                {% endif %}
+                            {% else %}—{% endif %}
+                        </td>
+                        <td>{% include 'accounts/_payment_action_btn.html' with student=student %}</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="7" class="text-center text-muted py-4">{% trans 'No students found.' %}</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ACTIVE TAB -->
+    <div class="tab-pane fade p-0" id="active" role="tabpanel">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>#</th>
+                        <th>{% trans 'Student' %}</th>
+                        <th>{% trans 'Program' %}</th>
+                        <th>{% trans 'Expiry Date' %}</th>
+                        <th>{% trans 'Days Left' %}</th>
+                        <th>{% trans 'Action' %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in active_students %}
+                    <tr class="{% if student.days_remaining is not None and student.days_remaining <= 7 %}table-warning{% endif %}">
+                        <td class="text-muted small">{{ forloop.counter }}</td>
+                        <td>
+                            <div class="fw-semibold">{{ student.student.get_full_name }}</div>
+                            <small class="text-muted">{{ student.student.username }}</small>
+                        </td>
+                        <td><span class="badge bg-light text-dark border">{{ student.program }}</span></td>
+                        <td class="small">
+                            {% if student.payment_expiry_date %}
+                                {{ student.payment_expiry_date }}
+                            {% else %}
+                                <span class="text-muted">{% trans 'No expiry set' %}</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if student.days_remaining is not None %}
+                                {% if student.days_remaining <= 7 %}
+                                    <span class="badge bg-warning text-dark">
+                                        <i class="fas fa-clock me-1"></i>{{ student.days_remaining }} {% trans 'days' %}
+                                    </span>
+                                {% else %}
+                                    <span class="text-success fw-semibold">{{ student.days_remaining }} {% trans 'days' %}</span>
+                                {% endif %}
+                            {% else %}
+                                <span class="text-muted">—</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{% url 'update_payment_status' student.pk %}"
+                               class="btn btn-sm btn-outline-warning me-1"
+                               onclick="return confirm('Renew/extend access for {{ student.student.get_full_name }}?')">
+                                <i class="fas fa-redo me-1"></i>{% trans 'Renew' %}
+                            </a>
+                            <a href="{% url 'update_payment_status' student.pk %}"
+                               class="btn btn-sm btn-outline-danger"
+                               onclick="return confirm('Revoke access for {{ student.student.get_full_name }}?')">
+                                <i class="fas fa-ban me-1"></i>{% trans 'Revoke' %}
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="6" class="text-center text-muted py-4">{% trans 'No active students.' %}</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- PENDING TAB -->
+    <div class="tab-pane fade p-0" id="pending" role="tabpanel">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>#</th>
+                        <th>{% trans 'Student' %}</th>
+                        <th>{% trans 'Program' %}</th>
+                        <th>{% trans 'Email' %}</th>
+                        <th>{% trans 'Registered' %}</th>
+                        <th>{% trans 'Action' %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in pending_students %}
+                    <tr>
+                        <td class="text-muted small">{{ forloop.counter }}</td>
+                        <td>
+                            <div class="fw-semibold">{{ student.student.get_full_name }}</div>
+                            <small class="text-muted">{{ student.student.username }}</small>
+                        </td>
+                        <td><span class="badge bg-light text-dark border">{{ student.program }}</span></td>
+                        <td class="small text-muted">{{ student.student.email }}</td>
+                        <td class="small text-muted">{{ student.student.date_joined|date:"d M Y" }}</td>
+                        <td>
+                            <a href="{% url 'update_payment_status' student.pk %}" class="btn btn-sm btn-success">
+                                <i class="fas fa-check me-1"></i>{% trans 'Approve Payment' %}
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="6" class="text-center py-4">
+                        <i class="fas fa-check-circle text-success me-2 fs-4"></i>
+                        <span class="text-muted">{% trans 'All payments are up to date!' %}</span>
+                    </td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- EXPIRED TAB -->
+    <div class="tab-pane fade p-0" id="expired" role="tabpanel">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>#</th>
+                        <th>{% trans 'Student' %}</th>
+                        <th>{% trans 'Program' %}</th>
+                        <th>{% trans 'Expired On' %}</th>
+                        <th>{% trans 'Action' %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in expired_students %}
+                    <tr class="table-danger">
+                        <td class="text-muted small">{{ forloop.counter }}</td>
+                        <td>
+                            <div class="fw-semibold">{{ student.student.get_full_name }}</div>
+                            <small class="text-muted">{{ student.student.username }}</small>
+                        </td>
+                        <td><span class="badge bg-light text-dark border">{{ student.program }}</span></td>
+                        <td class="small">
+                            {% if student.payment_expiry_date %}
+                                <span class="text-danger fw-semibold">{{ student.payment_expiry_date }}</span>
+                            {% else %}—{% endif %}
+                        </td>
+                        <td>
+                            <a href="{% url 'update_payment_status' student.pk %}" class="btn btn-sm btn-primary">
+                                <i class="fas fa-redo me-1"></i>{% trans 'Renew Access' %}
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="5" class="text-center py-4">
+                        <i class="fas fa-check-circle text-success me-2 fs-4"></i>
+                        <span class="text-muted">{% trans 'No expired accounts.' %}</span>
+                    </td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div><!-- end tab-content -->
+
+{% endblock content %}
+
+{% block js %}
+<script>
+    // Restore last active tab from localStorage
+    const savedTab = localStorage.getItem('paymentTab');
+    if (savedTab) {
+        const tabEl = document.querySelector(`#paymentTabs button[data-bs-target="${savedTab}"]`);
+        if (tabEl) bootstrap.Tab.getOrCreateInstance(tabEl).show();
+    }
+    document.querySelectorAll('#paymentTabs button').forEach(btn => {
+        btn.addEventListener('shown.bs.tab', e => {
+            localStorage.setItem('paymentTab', e.target.getAttribute('data-bs-target'));
+        });
+    });
+</script>
+{% endblock js %}

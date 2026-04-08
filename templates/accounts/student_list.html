@@ -38,6 +38,7 @@
                 <th> {% trans 'Email' %} </th>
                 <th> {% trans 'Program' %} </th>
                 {% if request.user.is_superuser %}
+                <th> {% trans 'Payment Status' %} </th>
                 <th> {% trans 'Action' %} </th>
                 {% endif %}
             </tr>
@@ -52,6 +53,42 @@
                 <td>{{ student.program }}</td>
 
                 {% if request.user.is_superuser %}
+                <td>
+                    {% if student.has_active_access %}
+                        <a href="{% url 'update_payment_status' student.pk %}"
+                           class="btn btn-sm btn-success"
+                           title="{% trans 'Click to revoke access' %}"
+                           onclick="return confirm('Revoke payment access for {{ student.student.get_full_name }}?')">
+                            <i class="fas fa-check-circle me-1"></i>{% trans 'Active' %}
+                        </a>
+                        {% if student.payment_expiry_date %}
+                        <br>
+                        <small class="text-muted d-block mt-1">
+                            {% if student.days_remaining == 0 %}
+                                <span class="text-danger"><i class="fas fa-exclamation-triangle"></i> {% trans 'Expired' %}</span>
+                            {% elif student.days_remaining <= 7 %}
+                                <span class="text-warning"><i class="fas fa-clock"></i> {{ student.days_remaining }} {% trans 'days left' %}</span>
+                            {% else %}
+                                <i class="far fa-calendar-alt"></i> {{ student.days_remaining }} {% trans 'days left' %}
+                            {% endif %}
+                            <br><span class="text-muted">{% trans 'Exp:' %} {{ student.payment_expiry_date }}</span>
+                        </small>
+                        {% endif %}
+                    {% elif student.payment_status and not student.has_active_access %}
+                        <span class="badge bg-warning text-dark">
+                            <i class="fas fa-exclamation-triangle me-1"></i>{% trans 'Expired' %}
+                        </span>
+                        <br>
+                        <a href="{% url 'update_payment_status' student.pk %}" class="btn btn-sm btn-outline-primary mt-1">
+                            <i class="fas fa-redo me-1"></i>{% trans 'Renew' %}
+                        </a>
+                    {% else %}
+                        <a href="{% url 'update_payment_status' student.pk %}"
+                           class="btn btn-sm btn-danger">
+                            <i class="fas fa-times-circle me-1"></i>{% trans 'Pending' %}
+                        </a>
+                    {% endif %}
+                </td>
                 <td>
                     <div class="dropdown">
                         <button class="btn btn-sm" type="button" data-bs-toggle="dropdown" data-bs-strategy="fixed" aria-expanded="false">
