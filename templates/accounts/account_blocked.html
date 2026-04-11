@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{% trans 'Account Blocked' %} | {% trans 'Learning management system' %}{% endblock title %}
+{% load static %}
+
+{% block content %}
+<div class="row justify-content-center mt-4">
+    <div class="col-md-6">
+
+        <!-- Blocked Card -->
+        <div class="card border-danger shadow">
+            <div class="card-header bg-danger text-white text-center py-4">
+                <i class="fas fa-ban fa-4x mb-3 d-block"></i>
+                <h4 class="fw-bold mb-1">{% trans 'Account Blocked' %}</h4>
+                <p class="mb-0 opacity-75">{% trans 'Your account has been suspended due to non-payment.' %}</p>
+            </div>
+
+            <div class="card-body p-4">
+
+                {% if deadline %}
+                <div class="alert alert-warning border-0">
+                    <div class="fw-bold mb-1">
+                        <i class="fas fa-calendar-times me-2"></i>{% trans 'Payment Deadline Passed' %}
+                    </div>
+                    <div class="small">
+                        {% trans 'Deadline was:' %} <strong>{{ deadline.deadline_date }}</strong>
+                    </div>
+                    {% if deadline.message %}
+                    <hr class="my-2">
+                    <div class="small text-muted">{{ deadline.message }}</div>
+                    {% endif %}
+                </div>
+                {% endif %}
+
+                <!-- Student Info -->
+                {% if student %}
+                <div class="d-flex align-items-center gap-3 p-3 bg-light rounded mb-3">
+                    <div class="rounded-circle bg-danger text-white d-flex align-items-center justify-content-center fw-bold"
+                         style="width:48px;height:48px;font-size:1.2rem;flex-shrink:0;">
+                        {{ request.user.first_name|first|upper }}
+                    </div>
+                    <div>
+                        <div class="fw-semibold">{{ request.user.get_full_name }}</div>
+                        <small class="text-muted">{{ request.user.username }}</small>
+                        <span class="badge bg-danger ms-1">{% trans 'Blocked' %}</span>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Payment Status -->
+                <div class="d-flex justify-content-between align-items-center p-3 border rounded mb-4">
+                    <div>
+                        <div class="text-muted small">{% trans 'Payment Status' %}</div>
+                        <div class="fw-bold text-danger">
+                            <i class="fas fa-times-circle me-1"></i>{% trans 'Not Paid' %}
+                        </div>
+                    </div>
+                    <div class="text-end">
+                        <div class="text-muted small">{% trans 'Account Access' %}</div>
+                        <div class="fw-bold text-danger">{% trans 'Suspended' %}</div>
+                    </div>
+                </div>
+
+                <!-- Instructions -->
+                <div class="alert alert-info border-0">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <strong>{% trans 'How to restore access:' %}</strong>
+                    <ol class="mb-0 mt-2 small">
+                        <li>{% trans 'Contact your admin or institute.' %}</li>
+                        <li>{% trans 'Complete your payment.' %}</li>
+                        <li>{% trans 'Admin will approve and restore your access.' %}</li>
+                    </ol>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <a href="{% url 'profile' %}" class="btn btn-outline-primary flex-grow-1">
+                        <i class="fas fa-user me-1"></i>{% trans 'View Profile' %}
+                    </a>
+                    <a href="{% url 'logout' %}" class="btn btn-outline-danger">
+                        <i class="fas fa-sign-out-alt me-1"></i>{% trans 'Logout' %}
+                    </a>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock content %}

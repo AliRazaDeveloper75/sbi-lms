@@ -112,21 +112,66 @@
 			{% endif %}
 
 			{% if request.user.is_student %}
-			{% if not payment_status %}
+
+			{# ① BLOCKED — deadline passed, not paid #}
+			{% if account_blocked %}
 			<li>
-				<div class="alert alert-warning py-1 px-2 mx-2 small mb-1" role="alert">
-					<i class="fas fa-lock me-1"></i>{% trans 'Payment pending — contact admin to unlock all features.' %}
+				<div class="mx-2 mb-2 rounded p-2 text-white text-center small" style="background:#dc3545;">
+					<i class="fas fa-ban d-block mb-1" style="font-size:1.4rem;"></i>
+					<strong>{% trans 'Account Blocked' %}</strong>
+					<div class="opacity-75 mt-1" style="font-size:.75rem;">{% trans 'Deadline passed — not paid' %}</div>
+					<a href="{% url 'account_blocked' %}" class="btn btn-sm btn-light mt-2 w-100" style="font-size:.75rem;">
+						{% trans 'View Details' %}
+					</a>
 				</div>
 			</li>
+
+			{# ② GRACE PERIOD — deadline coming, not paid yet, but access is open #}
+			{% elif in_grace_period %}
+				{% if payment_deadline.days_until_deadline == 0 %}
+				<li>
+					<div class="mx-2 mb-1 rounded p-2 small border border-danger" style="background:#fff5f5;">
+						<i class="fas fa-exclamation-circle text-danger me-1"></i>
+						<strong class="text-danger">{% trans 'Pay TODAY!' %}</strong>
+						<div class="text-muted" style="font-size:.72rem;">{% trans 'Account blocked tonight if unpaid.' %}</div>
+					</div>
+				</li>
+				{% elif payment_deadline.days_until_deadline <= 7 %}
+				<li>
+					<div class="mx-2 mb-1 rounded p-2 small border border-warning" style="background:#fffbf0;">
+						<i class="fas fa-calendar-times text-warning me-1"></i>
+						<strong>{{ payment_deadline.days_until_deadline }}d {% trans 'to pay' %}</strong>
+						<div class="text-muted" style="font-size:.72rem;">{% trans 'Last date:' %} {{ payment_deadline.deadline_date }}</div>
+					</div>
+				</li>
+				{% else %}
+				<li>
+					<div class="mx-2 mb-1 rounded p-2 small border" style="background:#f0f8ff;">
+						<i class="fas fa-calendar-alt text-info me-1"></i>
+						<strong>{% trans 'Pay by' %} {{ payment_deadline.deadline_date }}</strong>
+					</div>
+				</li>
+				{% endif %}
+
+			{# ③ NO DEADLINE — admin hasn't set deadline but student not paid → lock #}
+			{% elif not payment_status %}
+			<li>
+				<div class="mx-2 mb-1 rounded p-2 small" style="background:#fff3cd;">
+					<i class="fas fa-lock text-warning me-1"></i>{% trans 'Payment pending — contact admin.' %}
+				</div>
+			</li>
+
+			{# ④ PAID but access expiring soon #}
 			{% elif days_remaining is not None and days_remaining <= 7 %}
 			<li>
-				<div class="alert alert-danger py-1 px-2 mx-2 small mb-1" role="alert">
-					<i class="fas fa-exclamation-triangle me-1"></i>
+				<div class="mx-2 mb-1 rounded p-2 small border border-danger" style="background:#fff5f5;">
+					<i class="fas fa-clock text-danger me-1"></i>
 					{% if days_remaining == 0 %}
-						{% trans 'Access expired! Contact admin.' %}
+						<strong class="text-danger">{% trans 'Access Expired!' %}</strong>
 					{% else %}
-						{{ days_remaining }} {% trans 'days left — renew soon!' %}
+						<strong class="text-danger">{{ days_remaining }} {% trans 'days left' %}</strong>
 					{% endif %}
+					<div class="text-muted" style="font-size:.72rem;">{% trans 'Contact admin to renew.' %}</div>
 				</div>
 			</li>
 			{% endif %}

@@ -1,7 +1,7 @@
 from django import forms
 from django.db import transaction
 
-from .models import NewsAndEvents, Session, Semester, SEMESTER, Notification
+from .models import NewsAndEvents, Session, Semester, SEMESTER, Notification, PaymentDeadline
 
 
 # news and events
@@ -19,6 +19,21 @@ class NewsAndEventsForm(forms.ModelForm):
         self.fields["title"].widget.attrs.update({"class": "form-control"})
         self.fields["summary"].widget.attrs.update({"class": "form-control"})
         self.fields["posted_as"].widget.attrs.update({"class": "form-control"})
+
+
+class PaymentDeadlineForm(forms.ModelForm):
+    deadline_date = forms.DateField(
+        widget=forms.TextInput(attrs={"type": "date", "class": "form-control"}),
+        help_text="Students who have not paid by this date will be blocked.",
+    )
+
+    class Meta:
+        model = PaymentDeadline
+        fields = ("deadline_date", "message")
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["message"].widget.attrs.update({"class": "form-control", "rows": 3})
 
 
 class NotificationForm(forms.ModelForm):

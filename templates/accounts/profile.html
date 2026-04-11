@@ -88,30 +88,69 @@
                 <hr>
                 <p class="fw-bold"><i class="fas fa-credit-card"></i> {% trans 'Payment Status' %}</p>
                 <div class="dashboard-description">
-                    {% if payment_status %}
-                    <span class="badge bg-success fs-6"><i class="fas fa-check-circle me-1"></i>{% trans 'Payment Done — Full Access Granted' %}</span>
+
+                    {# ── BLOCKED ── #}
+                    {% if account_blocked %}
+                    <div class="alert alert-danger p-3 rounded">
+                        <div class="fw-bold mb-1"><i class="fas fa-ban me-1"></i>{% trans 'Account Blocked' %}</div>
+                        <p class="mb-2 small">{% trans 'Your account is blocked because the payment deadline has passed and your payment has not been verified.' %}</p>
+                        {% if payment_deadline %}
+                        <div class="small"><strong>{% trans 'Deadline was:' %}</strong> {{ payment_deadline.deadline_date }}</div>
+                        {% if payment_deadline.message %}
+                        <div class="small text-muted mt-1">{{ payment_deadline.message }}</div>
+                        {% endif %}
+                        {% endif %}
+                        <p class="mb-0 small mt-2 text-danger fw-semibold">{% trans 'Contact admin immediately to restore access.' %}</p>
+                    </div>
+
+                    {# ── PAID & ACTIVE ── #}
+                    {% elif payment_status %}
+                    <span class="badge bg-success fs-6 mb-2">
+                        <i class="fas fa-check-circle me-1"></i>{% trans 'Payment Verified — Full Access' %}
+                    </span>
                     {% if payment_expiry_date %}
                     <div class="mt-2">
                         <p class="mb-1"><strong>{% trans 'Access Expires:' %}</strong> {{ payment_expiry_date }}</p>
-                        {% if days_remaining is not None %}
-                            {% if days_remaining == 0 %}
-                            <span class="badge bg-danger">{% trans 'Access Expired' %}</span>
-                            {% elif days_remaining <= 7 %}
-                            <span class="badge bg-warning text-dark">
-                                <i class="fas fa-clock me-1"></i>{{ days_remaining }} {% trans 'days remaining — contact admin to renew' %}
-                            </span>
-                            {% else %}
-                            <span class="badge bg-info text-dark">
-                                <i class="fas fa-calendar-check me-1"></i>{{ days_remaining }} {% trans 'days remaining' %}
-                            </span>
-                            {% endif %}
+                        {% if days_remaining == 0 %}
+                        <span class="badge bg-danger">{% trans 'Expired — contact admin' %}</span>
+                        {% elif days_remaining is not None and days_remaining <= 7 %}
+                        <span class="badge bg-warning text-dark">
+                            <i class="fas fa-clock me-1"></i>{{ days_remaining }} {% trans 'days remaining — renew soon' %}
+                        </span>
+                        {% elif days_remaining is not None %}
+                        <span class="badge bg-info text-dark">
+                            <i class="fas fa-calendar-check me-1"></i>{{ days_remaining }} {% trans 'days remaining' %}
+                        </span>
                         {% endif %}
                     </div>
                     {% endif %}
+
+                    {# ── PENDING WITH DEADLINE ── #}
                     {% else %}
-                    <span class="badge bg-danger fs-6"><i class="fas fa-times-circle me-1"></i>{% trans 'Payment Pending — Limited Access' %}</span>
-                    <p class="mt-2 text-muted small">{% trans 'Please contact admin to complete your payment and unlock all features.' %}</p>
+                    <span class="badge bg-danger fs-6 mb-2">
+                        <i class="fas fa-times-circle me-1"></i>{% trans 'Payment Pending — Limited Access' %}
+                    </span>
+                    {% if payment_deadline and payment_deadline.is_active %}
+                    <div class="alert mt-2 mb-0 py-2 px-3 small
+                        {% if payment_deadline.days_until_deadline <= 0 %}alert-danger
+                        {% elif payment_deadline.days_until_deadline <= 3 %}alert-warning
+                        {% else %}alert-info{% endif %}">
+                        <i class="fas fa-calendar-times me-1"></i>
+                        <strong>{% trans 'Payment Deadline:' %} {{ payment_deadline.deadline_date }}</strong>
+                        {% if payment_deadline.days_until_deadline > 0 %}
+                        — {{ payment_deadline.days_until_deadline }} {% trans 'days remaining' %}
+                        {% elif payment_deadline.days_until_deadline == 0 %}
+                        — <strong>{% trans 'Due Today!' %}</strong>
+                        {% endif %}
+                        {% if payment_deadline.message %}
+                        <div class="mt-1 text-muted">{{ payment_deadline.message }}</div>
+                        {% endif %}
+                    </div>
+                    {% else %}
+                    <p class="mt-1 text-muted small">{% trans 'Contact admin to complete payment and unlock all features.' %}</p>
                     {% endif %}
+                    {% endif %}
+
                 </div>
                 {% endif %}
     

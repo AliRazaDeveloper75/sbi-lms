@@ -16,10 +16,37 @@
 
 <div class="d-flex align-items-center justify-content-between mb-3">
     <h4 class="fw-bold mb-0"><i class="fas fa-credit-card me-2 text-primary"></i>{% trans 'Payment Management' %}</h4>
-    <a href="{% url 'student_list' %}" class="btn btn-sm btn-outline-secondary">
-        <i class="fas fa-users me-1"></i>{% trans 'All Students' %}
+    <div class="d-flex gap-2">
+        <a href="{% url 'set_payment_deadline' %}" class="btn btn-sm btn-danger">
+            <i class="fas fa-calendar-times me-1"></i>{% trans 'Set Deadline' %}
+        </a>
+        <a href="{% url 'student_list' %}" class="btn btn-sm btn-outline-secondary">
+            <i class="fas fa-users me-1"></i>{% trans 'All Students' %}
+        </a>
+    </div>
+</div>
+
+{% if payment_deadline and payment_deadline.is_active %}
+<div class="alert {% if payment_deadline.is_passed %}alert-danger{% elif payment_deadline.days_until_deadline <= 3 %}alert-warning{% else %}alert-info{% endif %} d-flex align-items-center justify-content-between mb-3">
+    <div>
+        {% if payment_deadline.is_passed %}
+        <i class="fas fa-ban me-2"></i><strong>{% trans 'Deadline Passed!' %}</strong>
+        {% trans 'All unpaid students are currently blocked.' %}
+        {% else %}
+        <i class="fas fa-calendar-times me-2"></i><strong>{% trans 'Payment Deadline:' %} {{ payment_deadline.deadline_date }}</strong>
+        &mdash;
+        {% if payment_deadline.days_until_deadline == 0 %}
+            <span class="fw-bold">{% trans 'Due Today! Unpaid students will be blocked tonight.' %}</span>
+        {% else %}
+            {{ payment_deadline.days_until_deadline }} {% trans 'days until unpaid students are blocked.' %}
+        {% endif %}
+        {% endif %}
+    </div>
+    <a href="{% url 'set_payment_deadline' %}" class="btn btn-sm btn-outline-light ms-3">
+        <i class="fas fa-edit me-1"></i>{% trans 'Edit' %}
     </a>
 </div>
+{% endif %}
 
 <!-- Summary Cards -->
 <div class="row g-3 mb-4">

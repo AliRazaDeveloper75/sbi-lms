@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{{ title }} | {% trans 'Learning management system' %}{% endblock title %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block content %}
+
+<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'home' %}">{% trans 'Home' %}</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'payment_management' %}">{% trans 'Payment Management' %}</a></li>
+        <li class="breadcrumb-item active">{% trans 'Set Payment Deadline' %}</li>
+    </ol>
+</nav>
+
+{% include 'snippets/messages.html' %}
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+
+        <!-- Current Deadline Status -->
+        {% if current %}
+        <div class="alert {% if current.is_passed %}alert-danger{% else %}alert-warning{% endif %} mb-3">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <strong>
+                        {% if current.is_passed %}
+                        <i class="fas fa-ban me-1"></i>{% trans 'Deadline Passed — Students are currently blocked' %}
+                        {% else %}
+                        <i class="fas fa-clock me-1"></i>{% trans 'Active Deadline' %}
+                        {% endif %}
+                    </strong>
+                    <div class="small mt-1">
+                        {% trans 'Current deadline:' %} <strong>{{ current.deadline_date }}</strong>
+                        {% if not current.is_passed %}
+                        &mdash;
+                        {% if current.days_until_deadline == 0 %}
+                            <span class="text-danger">{% trans 'Due today!' %}</span>
+                        {% else %}
+                            {{ current.days_until_deadline }} {% trans 'days remaining' %}
+                        {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Set Deadline Form -->
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white border-bottom py-3">
+                <h6 class="mb-0 fw-bold">
+                    <i class="fas fa-calendar-times me-2 text-danger"></i>
+                    {% if current %}{% trans 'Update Payment Deadline' %}{% else %}{% trans 'Set Payment Deadline' %}{% endif %}
+                </h6>
+            </div>
+            <div class="card-body p-4">
+
+                <div class="alert alert-secondary border-0 small mb-4">
+                    <i class="fas fa-info-circle me-1"></i>
+                    {% trans 'After this date, any student who has not paid will have their account automatically blocked. They will see a blocked page until admin approves their payment.' %}
+                </div>
+
+                <form method="POST">
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">
+                            <i class="fas fa-calendar-alt me-1 text-danger"></i>{% trans 'Last Payment Date' %}
+                        </label>
+                        {{ form.deadline_date }}
+                        <div class="form-text">{{ form.deadline_date.help_text }}</div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">
+                            <i class="fas fa-comment-alt me-1 text-primary"></i>{% trans 'Message for Students' %}
+                        </label>
+                        {{ form.message }}
+                        <div class="form-text">{% trans 'This message will be shown to all students as a warning.' %}</div>
+                    </div>
+
+                    <!-- Live Preview -->
+                    <div class="alert alert-warning border-0 small" id="deadline-preview" style="display:none;">
+                        <i class="fas fa-exclamation-triangle me-1"></i>
+                        {% trans 'Students will be blocked from' %} <strong id="preview-date"></strong> {% trans 'onwards if they have not paid.' %}
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-danger flex-grow-1 fw-semibold">
+                            <i class="fas fa-calendar-times me-1"></i>
+                            {% if current %}{% trans 'Update Deadline' %}{% else %}{% trans 'Set Deadline' %}{% endif %}
+                        </button>
+                        <a href="{% url 'payment_management' %}" class="btn btn-outline-secondary">
+                            {% trans 'Cancel' %}
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock content %}
+
+{% block js %}
+<script>
+    const dateInput = document.querySelector('input[type="date"]');
+    const preview = document.getElementById('deadline-preview');
+    const previewDate = document.getElementById('preview-date');
+
+    function updatePreview() {
+        const val = dateInput.value;
+        if (val) {
+            const d = new Date(val);
+            const opts = { year: 'numeric', month: 'long', day: 'numeric' };
+            previewDate.textContent = d.toLocaleDateString(undefined, opts);
+            preview.style.display = 'block';
+        } else {
+            preview.style.display = 'none';
+        }
+    }
+    dateInput.addEventListener('change', updatePreview);
+    updatePreview();
+</script>
+{% endblock js %}

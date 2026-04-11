@@ -96,6 +96,47 @@ class ActivityLog(models.Model):
         return f"[{self.created_at}]{self.message}"
 
 
+class PaymentDeadline(models.Model):
+    """
+    Admin sets a global payment deadline date + message.
+    After this date, any student who hasn't paid is automatically blocked.
+    Only one record should be active at a time.
+    """
+    deadline_date = models.DateField(help_text="Last date for students to complete payment.")
+    message = models.TextField(
+        help_text="Message shown to students about this deadline.",
+        default="Please complete your payment before the deadline to avoid account suspension.",
+    )
+    is_active = models.BooleanField(
+        default=True,
+        help_text="Only one deadline should be active at a time.",
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ("-created_at",)
+
+    def __str__(self):
+        return f"Payment Deadline: {self.deadline_date}"
+
+    @property
+    def is_passed(self):
+        from django.utils import timezone
+        return timezone.now().date() > self.deadline_date
+
+    @property
+    def days_until_deadline(self):
+        from django.utils import timezone
+        delta = (self.deadline_date - timezone.now().date()).days
+        return delta  # negative means already passed
+
+    def save(self, *args, **kwargs):
+        # Ensure only one active deadline at a time
+        if self.is_active:
+            PaymentDeadline.objects.exclude(pk=self.pk).update(is_active=False)
+        super().save(*args, **kwargs)
+
+
 class Notification(models.Model):
     title = models.CharField(max_length=200)
     message = models.TextField()

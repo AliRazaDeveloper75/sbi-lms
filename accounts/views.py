@@ -497,6 +497,57 @@ def delete_student(request, pk):
 
 
 @login_required
+def account_blocked(request):
+    """Shown to students whose payment deadline has passed and haven't paid."""
+    from core.models import PaymentDeadline
+    deadline = PaymentDeadline.objects.filter(is_active=True).first()
+    student = None
+    if request.user.is_student:
+        try:
+            student = Student.objects.get(student=request.user)
+        except Student.DoesNotExist:
+            pass
+    return render(request, "accounts/account_blocked.html", {
+        "title": "Account Blocked",
+        "deadline": deadline,
+        "student": student,
+    })
+
+
+@login_required
+@admin_required
+def set_payment_deadline(request):
+    """Admin sets or updates the global payment deadline."""
+    from core.models import PaymentDeadline
+    from core.forms import PaymentDeadlineForm
+
+    current = PaymentDeadline.objects.filter(is_active=True).first()
+
+    if request.method == "POST":
+        form = PaymentDeadlineForm(request.POST, instance=current)
+        if form.is_valid():
+            deadline = form.save(commit=False)
+            deadline.is_active = True
+            deadline.save()
+            messages.success(
+                request,
+                f"Payment deadline set to {deadline.deadline_date}. "
+                f"All unpaid students will be blocked after this date.",
+            )
+            return redirect("payment_management")
+        else:
+            messages.error(request, "Please correct the error(s) below.")
+    else:
+        form = PaymentDeadlineForm(instance=current)
+
+    return render(request, "accounts/set_payment_deadline.html", {
+        "title": "Set Payment Deadline",
+        "form": form,
+        "current": current,
+    })
+
+
+@login_required
 @admin_required
 def payment_management(request):
     """Dedicated payment management page with tab-based overview."""

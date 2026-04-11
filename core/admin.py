@@ -1,7 +1,6 @@
 from django.contrib import admin
-from django.contrib.auth.models import Group
 
-from .models import Session, Semester, NewsAndEvents, Notification
+from .models import Session, Semester, NewsAndEvents, Notification, PaymentDeadline
 from modeltranslation.admin import TranslationAdmin
 
 
@@ -16,7 +15,14 @@ class NotificationAdmin(admin.ModelAdmin):
     list_filter = ["is_active"]
 
 
+class PaymentDeadlineAdmin(admin.ModelAdmin):
+    list_display = ["deadline_date", "is_active", "is_passed", "days_until_deadline", "created_at"]
+    list_editable = ["is_active"]
+    readonly_fields = ["created_at"]
+
+
 admin.site.register(Semester)
 admin.site.register(Session)
 admin.site.register(NewsAndEvents, NewsAndEventsAdmin)
 admin.site.register(Notification, NotificationAdmin)
+admin.site.register(PaymentDeadline, PaymentDeadlineAdmin)

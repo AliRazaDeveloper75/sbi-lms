@@ -30,6 +30,8 @@ from .views import (
     render_student_pdf_list,
     update_payment_status,
     payment_management,
+    account_blocked,
+    set_payment_deadline,
 )
 
 # from .forms import EmailValidationOnForgotPassword
@@ -67,6 +69,8 @@ urlpatterns = [
     ),  # new
     path("student/<int:pk>/payment-status/", update_payment_status, name="update_payment_status"),
     path("payments/", payment_management, name="payment_management"),
+    path("blocked/", account_blocked, name="account_blocked"),
+    path("payments/deadline/", set_payment_deadline, name="set_payment_deadline"),
     # path('add-student/', StudentAddView.as_view(), name='add_student'),
     # path('programs/course/delete/<int:pk>/', course_delete, name='delete_course'),
     # Setting urls
